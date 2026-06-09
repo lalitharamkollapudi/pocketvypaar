@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Check } from 'lucide-react';
 import { api } from '../../mockApi';
 
 export default function OtpVerification() {
@@ -7,6 +8,7 @@ export default function OtpVerification() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [timer, setTimer] = useState(60);
+  const [successAnim, setSuccessAnim] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const mobile = location.state?.mobile;
@@ -31,8 +33,15 @@ export default function OtpVerification() {
     try {
       const res = await api.verifyOtp(mobile, otp);
       if (res.success) {
-         // OTP verified, let them login
-         navigate('/login');
+         setSuccessAnim(true);
+         try {
+           const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+           audio.play().catch(e => console.log('Audio error:', e));
+         } catch(e) {}
+         
+         setTimeout(() => {
+           navigate('/login');
+         }, 1500);
       } else {
          setError('Invalid OTP. Please check your email.');
       }
@@ -59,7 +68,16 @@ export default function OtpVerification() {
   };
 
   return (
-    <div className="flex-center" style={{minHeight: '100vh', padding: '20px'}}>
+    <div className="flex-center" style={{minHeight: '100vh', padding: '20px', position: 'relative'}}>
+      {successAnim && (
+        <div className="success-overlay">
+          <div className="success-icon">
+            <Check size={32} strokeWidth={3} />
+          </div>
+          <h3 style={{marginTop: '16px', color: 'var(--success-color)'}}>Verified Successfully!</h3>
+        </div>
+      )}
+      
       <div className="surface fade-in" style={{width: '100%', maxWidth: '400px'}}>
         <h2 style={{marginTop: 0, textAlign: 'center'}}>Verify OTP</h2>
         <p style={{color: 'var(--text-muted)', textAlign: 'center', fontSize: '14px'}}>

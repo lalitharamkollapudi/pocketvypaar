@@ -6,9 +6,11 @@ import RegisterCustomer from './components/Auth/RegisterCustomer';
 import OtpVerification from './components/Auth/OtpVerification';
 import OwnerDashboard from './components/Owner/OwnerDashboard';
 import CustomerDashboard from './components/Customer/CustomerDashboard';
+import Splash from './components/Splash';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [showSplash, setShowSplash] = useState(true);
 
   const ProtectedRoute = ({ children, role }) => {
     if (!user) return <Navigate to="/login" />;
@@ -18,6 +20,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      {showSplash && <Splash onComplete={() => setShowSplash(false)} />}
       <div className="app-container" style={{maxWidth: '100vw', minHeight: '100vh'}}>
         <Routes>
           <Route path="/" element={<Navigate to={user ? (user.role === 'shop_owner' ? '/owner/dashboard' : '/customer/dashboard') : '/login'} />} />

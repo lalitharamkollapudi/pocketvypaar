@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg-color: #0f172a;
-  --surface-color: #1e293b;
-  --primary-color: #3b82f6;
-  --primary-hover: #2563eb;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-color: #334155;
+  --bg-color: #f0f9ff;
+  --surface-color: #ffffff;
+  --primary-color: #0ea5e9;
+  --primary-hover: #0284c7;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
   --success-color: #10b981;
   --danger-color: #ef4444;
   --radius-md: 12px;
@@ -42,6 +42,60 @@ body {
 
 .fade-in {
   animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes dropIn {
+  0% { transform: translateY(-50px); opacity: 0; }
+  60% { transform: translateY(10px); opacity: 1; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideUpFade {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes checkmark {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.splash-logo {
+  animation: dropIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.splash-caption {
+  animation: slideUpFade 0.6s ease-out 0.4s forwards;
+}
+
+.splash-footer {
+  animation: fadeIn 0.8s ease-out 0.8s forwards;
+}
+
+.success-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  z-index: 50;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.success-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--success-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: checkmark 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* Base UI Elements */
