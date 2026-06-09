@@ -34,7 +34,7 @@ export const api = {
         // Generate random 4 digit OTP
         nextOtp = Math.floor(1000 + Math.random() * 9000).toString();
         try {
-            await fetch('http://localhost:3001/api/send-otp', {
+            await fetch('/api/send-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mobile: data.mobile, email: data.email, otp: nextOtp })
@@ -61,7 +61,7 @@ export const api = {
         
         nextOtp = Math.floor(1000 + Math.random() * 9000).toString();
         try {
-            await fetch('http://localhost:3001/api/send-otp', {
+            await fetch('/api/send-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mobile: data.mobile, email: data.email, otp: nextOtp })
@@ -84,7 +84,7 @@ export const api = {
       setTimeout(async () => {
         nextOtp = Math.floor(1000 + Math.random() * 9000).toString();
         try {
-            const res = await fetch('http://localhost:3001/api/send-otp', {
+            const res = await fetch('/api/send-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mobile, email, otp: nextOtp })
