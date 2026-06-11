@@ -9,8 +9,8 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'pocketvyapaar@gmail.com',
-    pass: 'svkj xspv webe jvly'
+    user: process.env.EMAIL_USER || 'pocketvyapaar@gmail.com',
+    pass: process.env.EMAIL_PASS || 'svkj xspv webe jvly'
   }
 });
 
