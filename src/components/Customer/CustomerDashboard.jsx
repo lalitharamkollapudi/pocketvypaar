@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, Link } from 'react-router-dom';
-import { ChevronRight, ArrowLeft, MapPin, Store } from 'lucide-react';
+import { ChevronRight, ArrowLeft, MapPin, Store, Bell, Check, X } from 'lucide-react';
 import { api } from '../../mockApi';
 
 export default function CustomerDashboard({ user }) {
   const [shops, setShops] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,10 +18,21 @@ export default function CustomerDashboard({ user }) {
     try {
       const data = await api.getShopsForCustomer(user.id);
       setShops(data);
+      const pendingReqs = await api.getPendingRequests(user.id);
+      setRequests(pendingReqs);
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAcceptRequest = async (reqId) => {
+    try {
+      await api.acceptLinkRequest(reqId);
+      loadShops(); // Refresh shops and requests
+    } catch(e) {
+      console.error(e);
     }
   };
 
@@ -31,7 +44,43 @@ export default function CustomerDashboard({ user }) {
           <h1 style={{margin: 0, fontSize: '20px'}}>Kirana Khata</h1>
           <div style={{fontSize: '12px', color: 'var(--text-muted)'}}>{user.name}'s Accounts</div>
         </div>
+        <button onClick={() => setShowNotifications(true)} className="icon-btn" style={{background: 'transparent', border: 'none', position: 'relative'}}>
+          <Bell size={24} color="var(--text-main)" />
+          {requests.length > 0 && (
+            <span style={{position: 'absolute', top: 0, right: 0, width: '10px', height: '10px', background: 'var(--danger-color)', borderRadius: '50%'}}></span>
+          )}
+        </button>
       </header>
+
+      {/* Notifications Modal */}
+      {showNotifications && (
+        <div className="modal-overlay" onClick={() => setShowNotifications(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
+              <h3 style={{margin: 0}}>Notifications</h3>
+              <button onClick={() => setShowNotifications(false)} className="icon-btn"><X size={20}/></button>
+            </div>
+            
+            {requests.length === 0 ? (
+              <div style={{textAlign: 'center', color: 'var(--text-muted)', padding: '20px 0'}}>No new notifications.</div>
+            ) : (
+              <div className="space-y-4">
+                {requests.map(req => (
+                  <div key={req.id} style={{padding: '12px', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <div>
+                      <div style={{fontWeight: 600, fontSize: '14px'}}>{req.shopName}</div>
+                      <div style={{fontSize: '12px', color: 'var(--text-muted)'}}>{req.ownerName} wants to connect.</div>
+                    </div>
+                    <button onClick={() => handleAcceptRequest(req.id)} className="primary" style={{padding: '6px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                      <Check size={14} /> Accept
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Main Content Area */}
       <div style={{flex: 1, overflowY: 'auto', padding: '16px'}}>

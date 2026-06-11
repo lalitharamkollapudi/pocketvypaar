@@ -3,6 +3,7 @@
 let users = [];
 let shops = [];
 let transactions = [];
+let linkRequests = [];
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
@@ -113,8 +114,9 @@ export const api = {
   getCustomersForShop: async (shopOwnerId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        // Mock linked customers
-        const linkedCustomers = users.filter(u => u.role === 'customer');
+        const acceptedLinks = linkRequests.filter(lr => lr.shopOwnerId === shopOwnerId && lr.status === 'accepted');
+        const customerIds = acceptedLinks.map(lr => lr.customerId);
+        const linkedCustomers = users.filter(u => customerIds.includes(u.id));
         resolve(linkedCustomers);
       }, 500);
     });
@@ -124,7 +126,10 @@ export const api = {
   getShopsForCustomer: async (customerId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const linkedShops = shops;
+        const acceptedLinks = linkRequests.filter(lr => lr.customerId === customerId && lr.status === 'accepted');
+        const ownerIds = acceptedLinks.map(lr => lr.shopOwnerId);
+        const linkedShops = shops.filter(shop => ownerIds.includes(shop.ownerId));
+        
         const shopsWithOwnerDetails = linkedShops.map(shop => {
           const owner = users.find(u => u.id === shop.ownerId);
           return {
@@ -134,6 +139,59 @@ export const api = {
           };
         });
         resolve(shopsWithOwnerDetails);
+      }, 500);
+    });
+  },
+
+  // Notifications & Linking
+  sendLinkRequest: async (shopOwnerId, customerName, customerMobile) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const customer = users.find(u => u.mobile === customerMobile && u.role === 'customer');
+        if (!customer) return reject(new Error('Customer has no account. Please ask them to register first.'));
+        
+        const existing = linkRequests.find(lr => lr.shopOwnerId === shopOwnerId && lr.customerId === customer.id);
+        if (existing) {
+            if (existing.status === 'pending') return reject(new Error('A pending request already exists for this customer.'));
+            if (existing.status === 'accepted') return reject(new Error('This customer is already in your ledger.'));
+        }
+
+        linkRequests.push({
+            id: 'req_' + generateId(),
+            shopOwnerId,
+            customerId: customer.id,
+            status: 'pending'
+        });
+        resolve({ success: true });
+      }, 500);
+    });
+  },
+
+  getPendingRequests: async (customerId) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const pending = linkRequests.filter(lr => lr.customerId === customerId && lr.status === 'pending');
+        const enriched = pending.map(req => {
+            const owner = users.find(u => u.id === req.shopOwnerId);
+            const shop = shops.find(s => s.ownerId === req.shopOwnerId);
+            return {
+                ...req,
+                shopName: shop?.name || 'A Shop',
+                ownerName: owner?.name || 'Shop Owner'
+            };
+        });
+        resolve(enriched);
+      }, 500);
+    });
+  },
+
+  acceptLinkRequest: async (requestId) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const req = linkRequests.find(lr => lr.id === requestId);
+        if (!req) return reject(new Error('Request not found'));
+        req.status = 'accepted';
+        resolve({ success: true });
       }, 500);
     });
   },
