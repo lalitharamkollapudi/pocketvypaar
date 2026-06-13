@@ -34,7 +34,7 @@ export default function RegisterCustomer() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <input type="text" placeholder="Full Name" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required />
           <input type="email" placeholder="Email Address" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required />
-          <input type="tel" placeholder="Mobile Number (10 digits)" value={formData.mobile} onChange={e => setFormData({...formData, mobile: e.target.value})} pattern="[0-9]{10}" required />
+          <input type="tel" placeholder="Mobile Number (10 digits)" value={formData.mobile} onChange={e => { const val = e.target.value.replace(/\\D/g, ''); if (val.length <= 10) setFormData({...formData, mobile: val}); }} required />
           <input type="text" placeholder="Gov ID Number (Masked logic in backend)" value={formData.govId} onChange={e => setFormData({...formData, govId: e.target.value})} required />
           <input type="password" placeholder="Password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} required />
           <input type="password" placeholder="Confirm Password" value={formData.confirmPassword} onChange={e => setFormData({...formData, confirmPassword: e.target.value})} required />

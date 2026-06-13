@@ -35,7 +35,7 @@ export const api = {
         // Generate random 4 digit OTP
         nextOtp = Math.floor(1000 + Math.random() * 9000).toString();
         try {
-            await fetch('/api/send-otp', {
+            await fetch('http://localhost:3001/api/send-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mobile: data.mobile, email: data.email, otp: nextOtp })

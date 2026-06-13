@@ -36,7 +36,7 @@ export default function Login({ setUser }) {
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label style={{fontSize: '14px', marginBottom: '8px', display: 'block'}}>Mobile Number</label>
-            <input type="tel" value={mobile} onChange={e => setMobile(e.target.value)} required pattern="[0-9]{10}" placeholder="10 digit mobile" />
+            <input type="tel" value={mobile} onChange={e => { const val = e.target.value.replace(/\\D/g, ''); if (val.length <= 10) setMobile(val); }} required placeholder="10 digit mobile" />
           </div>
           <div>
             <label style={{fontSize: '14px', marginBottom: '8px', display: 'block'}}>Password</label>

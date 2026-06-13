@@ -34,8 +34,11 @@ export default function RegisterOwner() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <input type="text" placeholder="Full Name (As per docs)" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required />
           <input type="email" placeholder="Email Address" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required />
-          <input type="tel" placeholder="Mobile Number (10 digits)" value={formData.mobile} onChange={e => setFormData({...formData, mobile: e.target.value})} pattern="[0-9]{10}" required />
-          <input type="text" placeholder="GST Certificate URL or Path" value={formData.gst} onChange={e => setFormData({...formData, gst: e.target.value})} required />
+          <input type="tel" placeholder="Mobile Number (10 digits)" value={formData.mobile} onChange={e => { const val = e.target.value.replace(/\\D/g, ''); if (val.length <= 10) setFormData({...formData, mobile: val}); }} required />
+          <div style={{textAlign: 'left'}}>
+            <label style={{fontSize: '12px', color: 'var(--text-muted)'}}>Upload GST Certificate</label>
+            <input type="file" onChange={e => setFormData({...formData, gst: e.target.files[0]})} required accept=".pdf,image/*" />
+          </div>
           <input type="password" placeholder="Password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} required />
           <input type="password" placeholder="Confirm Password" value={formData.confirmPassword} onChange={e => setFormData({...formData, confirmPassword: e.target.value})} required />
           
