@@ -35,12 +35,13 @@ export const api = {
         // Generate random 4 digit OTP
         nextOtp = Math.floor(1000 + Math.random() * 9000).toString();
         try {
-            await fetch('http://localhost:3001/api/send-otp', {
+            const apiUrl = import.meta.env.PROD ? '/api/send-otp' : 'http://localhost:3001/api/send-otp';
+            await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mobile: data.mobile, email: data.email, otp: nextOtp })
             });
-        } catch(e) { console.error('Local OTP email server not running?', e); }
+        } catch(e) { console.error('OTP email server not running?', e); }
         
         resolve({ success: true, user: newUser });
       }, 800);
@@ -62,12 +63,13 @@ export const api = {
         
         nextOtp = Math.floor(1000 + Math.random() * 9000).toString();
         try {
-            await fetch('/api/send-otp', {
+            const apiUrl = import.meta.env.PROD ? '/api/send-otp' : 'http://localhost:3001/api/send-otp';
+            await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mobile: data.mobile, email: data.email, otp: nextOtp })
             });
-        } catch(e) { console.error('Local OTP email server not running?', e); }
+        } catch(e) { console.error('OTP email server not running?', e); }
         
         resolve({ success: true, user: newUser });
       }, 800);
@@ -85,7 +87,8 @@ export const api = {
       setTimeout(async () => {
         nextOtp = Math.floor(1000 + Math.random() * 9000).toString();
         try {
-            const res = await fetch('/api/send-otp', {
+            const apiUrl = import.meta.env.PROD ? '/api/send-otp' : 'http://localhost:3001/api/send-otp';
+            const res = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mobile, email, otp: nextOtp })
@@ -93,7 +96,7 @@ export const api = {
             if (!res.ok) throw new Error('Email server failed');
             resolve({ success: true });
         } catch(e) { 
-            console.error('Local OTP email server not running?', e); 
+            console.error('OTP email server not running?', e); 
             reject(new Error('Failed to send OTP'));
         }
       }, 500);

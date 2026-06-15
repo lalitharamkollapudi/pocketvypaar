@@ -27,13 +27,13 @@ export default async function handler(req, res) {
       service: 'gmail',
       auth: {
         // Automatically picks up from Vercel Environment Variables
-        user: process.env.EMAIL_USER || 'pocketvyapaar@gmail.com',
-        pass: process.env.EMAIL_PASS || 'svkj xspv webe jvly'
+        user: process.env.EMAIL_USER || 'pocketvyapaar99@gmail.com',
+        pass: process.env.EMAIL_PASS || 'tjxgpwwnzfwtzxqx'
       }
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'pocketvyapaar@gmail.com',
+      from: process.env.EMAIL_USER || 'pocketvyapaar99@gmail.com',
       to: email,
       subject: `OTP Verification for ${mobile}`,
       text: `Hello,\n\nThe OTP for user with mobile number ${mobile} is: ${otp}\n\nPlease use this OTP to verify your account in the Kirana Khata app.`

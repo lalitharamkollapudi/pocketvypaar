@@ -46,6 +46,13 @@ export default function RegisterOwner() {
             <input type="checkbox" checked={terms} onChange={e => setTerms(e.target.checked)} style={{width:'auto'}} />
             I agree to the Terms and Conditions
           </label>
+
+          {!isValid && formData.mobile && formData.mobile.length > 0 && formData.mobile.length < 10 && (
+            <div style={{color: 'var(--warning-color)', fontSize: '12px'}}>Mobile number must be exactly 10 digits.</div>
+          )}
+          {!isValid && formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword && (
+            <div style={{color: 'var(--warning-color)', fontSize: '12px'}}>Passwords do not match.</div>
+          )}
           
           <button type="submit" className="primary" style={{width: '100%'}} disabled={!isValid || loading}>
             {loading ? 'Processing...' : 'Register'}
