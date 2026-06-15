@@ -22,6 +22,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ success: false, error: 'Email is required' });
   }
 
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    return res.status(500).json({ success: false, error: 'Vercel Config Error: EMAIL_USER or EMAIL_PASS environment variables are missing!' });
+  }
+
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',

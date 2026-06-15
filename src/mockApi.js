@@ -93,11 +93,14 @@ export const api = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mobile, email, otp: nextOtp })
             });
-            if (!res.ok) throw new Error('Email server failed');
+            if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.error || 'Email server failed');
+            }
             resolve({ success: true });
         } catch(e) { 
             console.error('OTP email server not running?', e); 
-            reject(new Error('Failed to send OTP'));
+            reject(new Error(e.message || 'Failed to send OTP'));
         }
       }, 500);
     });

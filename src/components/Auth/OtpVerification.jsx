@@ -61,7 +61,7 @@ export default function OtpVerification() {
       setTimer(60);
       setError('A new OTP has been sent to your email.');
     } catch (err) {
-      setError('Failed to resend OTP. Make sure the backend server.js is running.');
+      setError(err.message || 'Failed to resend OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -87,7 +87,7 @@ export default function OtpVerification() {
         {error && <div style={{color: 'var(--danger-color)', marginBottom: '16px', fontSize: '14px', textAlign: 'center'}}>{error}</div>}
         
         <form onSubmit={handleVerify} className="space-y-4">
-          <input type="text" placeholder="Enter OTP from Email" value={otp} onChange={e => setOtp(e.target.value)} maxLength={4} required style={{textAlign: 'center', letterSpacing: '4px', fontSize: '24px'}} />
+          <input type="text" placeholder="Enter OTP from Email" value={otp} onChange={e => setOtp(e.target.value)} maxLength={4} required style={{textAlign: 'center', letterSpacing: otp ? '12px' : 'normal', fontSize: '24px'}} />
           
           <button type="submit" className="primary" style={{width: '100%'}} disabled={otp.length !== 4 || loading}>
             {loading ? 'Verifying...' : 'Verify & Continue'}
