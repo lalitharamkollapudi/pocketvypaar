@@ -10,8 +10,8 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER || 'pocketvyapaar99@gmail.com',
-    pass: process.env.EMAIL_PASS || 'tjxgpwwnzfwtzxqx'
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
@@ -24,7 +24,7 @@ app.post('/api/send-otp', async (req, res) => {
 
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'pocketvyapaar99@gmail.com',
+      from: process.env.EMAIL_USER,
       to: email, // Sending to the dynamic user email
       subject: `OTP Verification for ${mobile}`,
       text: `Hello,\n\nThe OTP for user with mobile number ${mobile} is: ${otp}\n\nPlease use this OTP to verify the account in the Kirana Khata app.`

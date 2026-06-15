@@ -26,14 +26,13 @@ export default async function handler(req, res) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        // Automatically picks up from Vercel Environment Variables
-        user: process.env.EMAIL_USER || 'pocketvyapaar99@gmail.com',
-        pass: process.env.EMAIL_PASS || 'tjxgpwwnzfwtzxqx'
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
       }
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'pocketvyapaar99@gmail.com',
+      from: process.env.EMAIL_USER,
       to: email,
       subject: `OTP Verification for ${mobile}`,
       text: `Hello,\n\nThe OTP for user with mobile number ${mobile} is: ${otp}\n\nPlease use this OTP to verify your account in the Kirana Khata app.`
@@ -43,6 +42,6 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true, message: `OTP sent to ${email} successfully` });
   } catch (error) {
     console.error('Error sending email:', error);
-    res.status(500).json({ success: false, error: 'Failed to send OTP email' });
+    res.status(500).json({ success: false, error: 'Failed to send OTP email', details: error.message });
   }
 }
