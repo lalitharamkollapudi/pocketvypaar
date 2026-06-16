@@ -1,9 +1,27 @@
 // Mock Database Schema and API
 
-let users = [];
-let shops = [];
-let transactions = [];
-let linkRequests = [];
+// Mock Database Schema and API
+
+const loadData = (key, defaultVal) => {
+  try {
+    const val = localStorage.getItem('pocketvyapaar_' + key);
+    return val ? JSON.parse(val) : defaultVal;
+  } catch (e) {
+    return defaultVal;
+  }
+};
+
+const saveData = () => {
+  localStorage.setItem('pocketvyapaar_users', JSON.stringify(users));
+  localStorage.setItem('pocketvyapaar_shops', JSON.stringify(shops));
+  localStorage.setItem('pocketvyapaar_transactions', JSON.stringify(transactions));
+  localStorage.setItem('pocketvyapaar_linkRequests', JSON.stringify(linkRequests));
+};
+
+let users = loadData('users', []);
+let shops = loadData('shops', []);
+let transactions = loadData('transactions', []);
+let linkRequests = loadData('linkRequests', []);
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
@@ -23,6 +41,7 @@ export const api = {
           ...data
         };
         users.push(newUser);
+        saveData();
         
         // Create an implicit shop for this owner
         shops.push({
@@ -31,6 +50,7 @@ export const api = {
           name: `${newUser.name}'s Shop`,
           location: { lat: 19.0760, lng: 72.8777, address: 'Mock Address, Mumbai' }
         });
+        saveData();
         
         // Generate random 4 digit OTP
         nextOtp = Math.floor(1000 + Math.random() * 9000).toString();
@@ -60,6 +80,7 @@ export const api = {
           ...data
         };
         users.push(newUser);
+        saveData();
         
         nextOtp = Math.floor(1000 + Math.random() * 9000).toString();
         try {
@@ -148,6 +169,7 @@ export const api = {
         const userIndex = users.findIndex(u => u.mobile === identifier || u.email === identifier);
         if (userIndex !== -1) {
           users[userIndex].password = newPassword;
+          saveData();
           resolve({ success: true });
         } else {
           reject(new Error('User not found'));
@@ -208,6 +230,7 @@ export const api = {
             customerId: customer.id,
             status: 'pending'
         });
+        saveData();
         resolve({ success: true });
       }, 500);
     });
@@ -237,6 +260,7 @@ export const api = {
         const req = linkRequests.find(lr => lr.id === requestId);
         if (!req) return reject(new Error('Request not found'));
         req.status = 'accepted';
+        saveData();
         resolve({ success: true });
       }, 500);
     });
@@ -253,6 +277,7 @@ export const api = {
           ...data
         };
         transactions.push(newTransaction);
+        saveData();
         resolve(newTransaction);
       }, 500);
     });
