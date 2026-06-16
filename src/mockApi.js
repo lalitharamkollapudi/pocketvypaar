@@ -106,12 +106,52 @@ export const api = {
     });
   },
 
-  login: async (mobile, password) => {
+  login: async (identifier, password) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const user = users.find(u => u.mobile === mobile && u.password === password);
+        const user = users.find(u => (u.mobile === identifier || u.email === identifier) && u.password === password);
         if (user) resolve(user);
         else reject(new Error('Invalid credentials'));
+      }, 500);
+    });
+  },
+
+  requestPasswordReset: async (identifier) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        const user = users.find(u => u.mobile === identifier || u.email === identifier);
+        if (!user) return reject(new Error('No account found with that email or mobile number'));
+        
+        nextOtp = Math.floor(1000 + Math.random() * 9000).toString();
+        try {
+            const apiUrl = import.meta.env.PROD ? '/api/send-otp' : 'http://localhost:3001/api/send-otp';
+            const res = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mobile: user.mobile, email: user.email, otp: nextOtp })
+            });
+            if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.error || 'Email server failed');
+            }
+            resolve({ success: true, email: user.email, mobile: user.mobile });
+        } catch(e) { 
+            reject(new Error(e.message || 'Failed to send OTP'));
+        }
+      }, 500);
+    });
+  },
+
+  resetPassword: async (identifier, newPassword) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const userIndex = users.findIndex(u => u.mobile === identifier || u.email === identifier);
+        if (userIndex !== -1) {
+          users[userIndex].password = newPassword;
+          resolve({ success: true });
+        } else {
+          reject(new Error('User not found'));
+        }
       }, 500);
     });
   },

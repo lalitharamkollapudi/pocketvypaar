@@ -4,6 +4,7 @@ import Login from './components/Auth/Login';
 import RegisterOwner from './components/Auth/RegisterOwner';
 import RegisterCustomer from './components/Auth/RegisterCustomer';
 import OtpVerification from './components/Auth/OtpVerification';
+import ForgotPassword from './components/Auth/ForgotPassword';
 import OwnerDashboard from './components/Owner/OwnerDashboard';
 import CustomerDashboard from './components/Customer/CustomerDashboard';
 import Splash from './components/Splash';
@@ -28,6 +29,7 @@ function App() {
           <Route path="/register-owner" element={<RegisterOwner />} />
           <Route path="/register-customer" element={<RegisterCustomer />} />
           <Route path="/otp-verification" element={<OtpVerification />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           
           <Route path="/owner/dashboard/*" element={
             <ProtectedRoute role="shop_owner">

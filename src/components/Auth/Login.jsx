@@ -37,8 +37,8 @@ export default function Login({ setUser }) {
         
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label style={{fontSize: '14px', marginBottom: '8px', display: 'block'}}>Mobile Number</label>
-            <input type="tel" value={mobile} onChange={e => { const val = e.target.value.replace(/\\D/g, ''); if (val.length <= 10) setMobile(val); }} required placeholder="10 digit mobile" />
+            <label style={{fontSize: '14px', marginBottom: '8px', display: 'block'}}>Email or Mobile Number</label>
+            <input type="text" value={mobile} onChange={e => setMobile(e.target.value)} required placeholder="Email or 10 digit mobile" />
           </div>
           <div>
             <label style={{fontSize: '14px', marginBottom: '8px', display: 'block'}}>Password</label>
@@ -54,7 +54,7 @@ export default function Login({ setUser }) {
             </div>
           </div>
           <div style={{textAlign: 'right'}}>
-            <Link to="#" style={{color: 'var(--primary-color)', fontSize: '14px', textDecoration: 'none'}}>Forgot Password?</Link>
+            <Link to="/forgot-password" style={{color: 'var(--primary-color)', fontSize: '14px', textDecoration: 'none'}}>Forgot Password?</Link>
           </div>
           <button type="submit" className="primary" style={{width: '100%'}} disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
