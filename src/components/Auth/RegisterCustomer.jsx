@@ -30,8 +30,11 @@ export default function RegisterCustomer() {
 
   return (
     <div className="flex-center" style={{minHeight: '100vh', padding: '20px'}}>
-      <div className="surface fade-in" style={{width: '100%', maxWidth: '400px'}}>
-        <h2 style={{marginTop: 0, textAlign: 'center'}}>Customer Registration</h2>
+      <div className="surface fade-in" style={{width: '100%', maxWidth: '450px'}}>
+        <div style={{display: 'flex', justifyContent: 'center', marginBottom: '16px'}}>
+          <img src="/logo.png" alt="Pocket Vyapaar Logo" style={{width: '100px', height: '100px', objectFit: 'contain', borderRadius: '50%'}} />
+        </div>
+        <h2 style={{marginTop: 0, textAlign: 'center'}}>Register Customer</h2>
         {error && <div style={{color: 'var(--danger-color)', marginBottom: '16px', fontSize: '14px', textAlign: 'center'}}>{error}</div>}
         
         <form onSubmit={handleSubmit} className="space-y-4">

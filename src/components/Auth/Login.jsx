@@ -30,7 +30,9 @@ export default function Login({ setUser }) {
   return (
     <div className="flex-center" style={{minHeight: '100vh', padding: '20px'}}>
       <div className="surface fade-in" style={{width: '100%', maxWidth: '450px'}}>
-        <h2 style={{marginTop: 0, textAlign: 'center'}}>Kirana Khata IoT</h2>
+        <div style={{display: 'flex', justifyContent: 'center', marginBottom: '16px'}}>
+          <img src="/logo.png" alt="Pocket Vyapaar Logo" style={{width: '120px', height: '120px', objectFit: 'contain', borderRadius: '50%'}} />
+        </div>
         <p style={{color: 'var(--text-muted)', textAlign: 'center'}}>Login to your account</p>
         
         {error && <div style={{color: 'var(--danger-color)', marginBottom: '16px', fontSize: '14px', textAlign: 'center'}}>{error}</div>}
