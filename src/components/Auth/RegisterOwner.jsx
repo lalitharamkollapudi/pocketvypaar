@@ -69,8 +69,11 @@ export default function RegisterOwner() {
             <div style={{color: 'var(--warning-color)', fontSize: '12px'}}>Passwords do not match.</div>
           )}
           
+          <div style={{fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center'}}>
+            By registering, you agree to our <Link to="/terms" style={{color: 'var(--primary-color)'}}>Terms & Conditions</Link>
+          </div>
           <button type="submit" className="primary" style={{width: '100%'}} disabled={!isValid || loading}>
-            {loading ? 'Processing...' : 'Register'}
+            {loading ? 'Sending OTP...' : 'Register as Shop Owner'}
           </button>
         </form>
         <div style={{marginTop: '16px', textAlign: 'center', fontSize: '14px'}}>
