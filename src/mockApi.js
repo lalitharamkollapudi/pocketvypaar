@@ -24,6 +24,14 @@ let shops = loadData('shops', []);
 let transactions = loadData('transactions', []);
 let linkRequests = loadData('linkRequests', []);
 let billingSessions = loadData('billingSessions', []);
+
+const refreshData = () => {
+  users = loadData('users', []);
+  shops = loadData('shops', []);
+  transactions = loadData('transactions', []);
+  linkRequests = loadData('linkRequests', []);
+  billingSessions = loadData('billingSessions', []);
+};
 let mockProducts = [
   { barcode: '123456789', name: 'Parle-G Biscuits', price: 10, category: 'Snacks' },
   { barcode: '987654321', name: 'Amul Butter 100g', price: 54, category: 'Dairy' },
@@ -41,7 +49,8 @@ export const api = {
   registerShopOwner: async (data) => {
     return new Promise((resolve, reject) => {
       setTimeout(async () => {
-        const existing = users.find(u => u.mobile === data.mobile);
+        refreshData();
+        const existing = users.find(u => String(u.mobile).trim() === String(data.mobile).trim());
         if (existing) return reject(new Error('Mobile number already exists'));
         
         const newUser = {
@@ -80,7 +89,8 @@ export const api = {
   registerCustomer: async (data) => {
     return new Promise((resolve, reject) => {
       setTimeout(async () => {
-        const existing = users.find(u => u.mobile === data.mobile);
+        refreshData();
+        const existing = users.find(u => String(u.mobile).trim() === String(data.mobile).trim());
         if (existing) return reject(new Error('Mobile number already exists'));
         
         const newUser = {
@@ -139,11 +149,12 @@ export const api = {
   login: async (identifier, password) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const id = identifier.trim().toLowerCase();
-        const pwd = password.trim();
+        refreshData();
+        const id = String(identifier).trim().toLowerCase();
+        const pwd = String(password).trim();
         const user = users.find(u => 
-          ((u.mobile && u.mobile.trim() === id) || (u.email && u.email.trim().toLowerCase() === id)) && 
-          u.password === pwd
+          ((u.mobile && String(u.mobile).trim() === id) || (u.email && String(u.email).trim().toLowerCase() === id)) && 
+          String(u.password).trim() === pwd
         );
         if (user) resolve(user);
         else reject(new Error('Invalid credentials'));
@@ -154,7 +165,9 @@ export const api = {
   requestPasswordReset: async (identifier) => {
     return new Promise((resolve, reject) => {
       setTimeout(async () => {
-        const user = users.find(u => u.mobile === identifier || u.email === identifier);
+        refreshData();
+        const id = String(identifier).trim().toLowerCase();
+        const user = users.find(u => String(u.mobile).trim() === id || String(u.email).trim().toLowerCase() === id);
         if (!user) return reject(new Error('No account found with that email or mobile number'));
         
         nextOtp = Math.floor(1000 + Math.random() * 9000).toString();
@@ -180,7 +193,9 @@ export const api = {
   resetPassword: async (identifier, newPassword) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const userIndex = users.findIndex(u => u.mobile === identifier || u.email === identifier);
+        refreshData();
+        const id = String(identifier).trim().toLowerCase();
+        const userIndex = users.findIndex(u => String(u.mobile).trim() === id || String(u.email).trim().toLowerCase() === id);
         if (userIndex !== -1) {
           users[userIndex].password = newPassword;
           saveData();
@@ -196,6 +211,7 @@ export const api = {
   getCustomersForShop: async (shopOwnerId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
+        refreshData();
         const acceptedLinks = linkRequests.filter(lr => lr.shopOwnerId === shopOwnerId && lr.status === 'accepted');
         const customerIds = acceptedLinks.map(lr => lr.customerId);
         const linkedCustomers = users.filter(u => customerIds.includes(u.id));
@@ -208,6 +224,7 @@ export const api = {
   getShopsForCustomer: async (customerId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
+        refreshData();
         const acceptedLinks = linkRequests.filter(lr => lr.customerId === customerId && lr.status === 'accepted');
         const ownerIds = acceptedLinks.map(lr => lr.shopOwnerId);
         const linkedShops = shops.filter(shop => ownerIds.includes(shop.ownerId));
@@ -229,7 +246,9 @@ export const api = {
   sendLinkRequest: async (shopOwnerId, customerName, customerMobile) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const customer = users.find(u => u.mobile === customerMobile && u.role === 'customer');
+        refreshData();
+        const searchMobile = String(customerMobile).trim();
+        const customer = users.find(u => String(u.mobile).trim() === searchMobile && u.role === 'customer');
         if (!customer) return reject(new Error('Customer has no account. Please ask them to register first.'));
         
         const existing = linkRequests.find(lr => lr.shopOwnerId === shopOwnerId && lr.customerId === customer.id);
@@ -253,6 +272,7 @@ export const api = {
   getPendingRequests: async (customerId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
+        refreshData();
         const pending = linkRequests.filter(lr => lr.customerId === customerId && lr.status === 'pending');
         const enriched = pending.map(req => {
             const owner = users.find(u => u.id === req.shopOwnerId);
@@ -271,6 +291,7 @@ export const api = {
   acceptLinkRequest: async (requestId) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
+        refreshData();
         const req = linkRequests.find(lr => lr.id === requestId);
         if (!req) return reject(new Error('Request not found'));
         req.status = 'accepted';
@@ -284,6 +305,7 @@ export const api = {
   addTransaction: async (data) => {
     return new Promise((resolve) => {
       setTimeout(() => {
+        refreshData();
         const newTransaction = {
           id: 'txn_' + generateId(),
           date: new Date().toISOString().split('T')[0],
@@ -300,6 +322,7 @@ export const api = {
   getLedger: async (shopId, customerId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
+        refreshData();
         const ledger = transactions.filter(t => t.shopId === shopId && t.customerId === customerId);
         resolve(ledger);
       }, 500);
@@ -310,6 +333,7 @@ export const api = {
   requestBillingSession: async (shopOwnerId, customerId) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
+        refreshData();
         // Check if an active/pending session already exists
         const existing = billingSessions.find(s => s.shopOwnerId === shopOwnerId && s.customerId === customerId && (s.status === 'pending' || s.status === 'accepted'));
         if (existing) {
@@ -334,6 +358,7 @@ export const api = {
   getPendingBillingSessions: async (customerId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
+        refreshData();
         const pending = billingSessions.filter(s => s.customerId === customerId && s.status === 'pending');
         const enriched = pending.map(session => {
           const owner = users.find(u => u.id === session.shopOwnerId);
@@ -353,6 +378,7 @@ export const api = {
   acceptBillingSession: async (sessionId) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
+        refreshData();
         const session = billingSessions.find(s => s.id === sessionId);
         if (!session) return reject(new Error('Session not found'));
         session.status = 'accepted';
@@ -365,6 +391,7 @@ export const api = {
   getBillingSessionStatus: async (shopOwnerId, customerId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
+        refreshData();
         const session = billingSessions.find(s => s.shopOwnerId === shopOwnerId && s.customerId === customerId && (s.status === 'pending' || s.status === 'accepted'));
         resolve(session ? session.status : null);
       }, 300);
@@ -374,6 +401,7 @@ export const api = {
   addScannedProductToLedger: async (shopOwnerId, customerId, barcode) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
+        refreshData();
         // Verify active session
         const session = billingSessions.find(s => s.shopOwnerId === shopOwnerId && s.customerId === customerId && s.status === 'accepted');
         if (!session) return reject(new Error('No active approved billing session with this customer.'));
