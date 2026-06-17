@@ -26,52 +26,48 @@ export default function Splash({ onComplete }) {
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       zIndex: 9999, overflow: 'hidden'
     }}>
-      <div style={{ position: 'relative', width: '180px', height: '180px' }}>
+      <div style={{ position: 'relative', width: '250px', height: '250px' }}>
         
-        {/* SVG Rings with Razor Sharp Edges */}
-        <svg viewBox="0 0 100 100" style={{position: 'absolute', width: '100%', height: '100%', overflow: 'visible'}}>
-          <defs>
-            <mask id="blueMask">
-              <circle cx="47" cy="53" r="47" fill="white" />
-              <circle cx="53" cy="47" r="47" fill="black" />
-            </mask>
-            <mask id="greyMask">
-              <circle cx="53" cy="47" r="47" fill="white" />
-              <circle cx="47" cy="53" r="47" fill="black" />
-            </mask>
-          </defs>
-
-          {/* Dark Blue Crescent (Spins Clockwise) */}
-          <g style={{ transformOrigin: '50% 50%', animation: 'spinIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinContinuous 3s linear infinite 1s' }}>
-            <circle cx="47" cy="53" r="47" fill="#025274" mask="url(#blueMask)" />
-            {/* Small circle at the thickest part of the blue crescent */}
-            <circle cx="14" cy="86" r="3.5" fill="var(--bg-color)" stroke="#025274" strokeWidth="2.5" />
-          </g>
-
-          {/* Grey Crescent (Spins Counter-Clockwise) */}
-          <g style={{ transformOrigin: '50% 50%', animation: 'spinReverseIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinReverseContinuous 3s linear infinite 1s' }}>
-            <circle cx="53" cy="47" r="47" fill="#8a8a8a" mask="url(#greyMask)" />
-            {/* Small circle at the thickest part of the grey crescent */}
-            <circle cx="86" cy="14" r="3.5" fill="var(--bg-color)" stroke="#8a8a8a" strokeWidth="2.5" />
-          </g>
-        </svg>
-        
-        {/* Rupee Symbol */}
+        {/* Blue Ring (Exact Logo Pixels) - Spins Clockwise */}
         <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '72px', fontWeight: 'bold', color: '#025274',
+          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+          backgroundImage: 'url(/logo_blue.png)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          transformOrigin: '50% 45%', // Center of the ring rotation
+          animation: 'spinIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinContinuous 3s linear infinite 1s'
+        }} />
+
+        {/* Grey Ring (Exact Logo Pixels) - Spins Anti-Clockwise */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+          backgroundImage: 'url(/logo_grey.png)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          transformOrigin: '50% 45%', // Center of the ring rotation
+          animation: 'spinReverseIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinReverseContinuous 3s linear infinite 1s'
+        }} />
+        
+        {/* Exact Logo Rupee Symbol */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+          backgroundImage: 'url(/logo_transparent.png)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          clipPath: 'circle(18% at 50% 45%)',
           opacity: showRupee ? 1 : 0,
           transform: showRupee ? 'scale(1)' : 'scale(0.3)',
+          transformOrigin: '50% 45%',
           transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.5)'
-        }}>
-          ₹
-        </div>
+        }} />
       </div>
       
       {/* Title sliding from borders */}
       <div style={{ 
-        display: 'flex', marginTop: '32px', width: '100%', justifyContent: 'center', overflow: 'hidden' 
+        display: 'flex', marginTop: '-15px', width: '100%', justifyContent: 'center', overflow: 'hidden' 
       }}>
         <span style={{
           color: '#025274', fontWeight: '800', fontSize: '28px', letterSpacing: '3px',
