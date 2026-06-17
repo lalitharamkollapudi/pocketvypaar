@@ -5,9 +5,9 @@ export default function Splash({ onComplete }) {
   const [showName, setShowName] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setShowRupee(true), 800);
-    const t2 = setTimeout(() => setShowName(true), 1600);
-    const timer = setTimeout(() => onComplete(), 3500);
+    const t1 = setTimeout(() => setShowRupee(true), 1200);
+    const t2 = setTimeout(() => setShowName(true), 2000);
+    const timer = setTimeout(() => onComplete(), 4000);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -20,53 +20,59 @@ export default function Splash({ onComplete }) {
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
       background: 'var(--bg-color)',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      color: 'var(--text-main)', zIndex: 9999
+      zIndex: 9999
     }}>
-      <div style={{ position: 'relative', width: '120px', height: '120px', marginBottom: '32px' }}>
+      <div style={{ position: 'relative', width: '250px', height: '250px' }}>
+        
+        {/* Rings: Mask out the center rupee and the bottom text, then spin */}
         <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          border: '8px solid transparent',
-          borderTopColor: '#025274',
-          borderRightColor: '#025274',
-          borderRadius: '50%',
-          animation: 'spinIn 0.8s ease-out forwards, spinContinuous 2s linear infinite 0.8s'
+          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+          backgroundImage: 'url(/logo.png)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          transformOrigin: '50% 45%', // Approximate center of the rings
+          clipPath: 'polygon(0 0, 100% 0, 100% 78%, 0 78%)', // Hide text
+          maskImage: 'radial-gradient(circle at 50% 45%, transparent 18%, black 19%)',
+          WebkitMaskImage: 'radial-gradient(circle at 50% 45%, transparent 18%, black 19%)',
+          animation: 'spinIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinContinuous 3s linear infinite 1s'
         }} />
         
+        {/* Rupee Symbol: Isolate the center */}
         <div style={{
-          position: 'absolute', top: '16px', left: '16px', right: '16px', bottom: '16px',
-          border: '8px solid transparent',
-          borderBottomColor: '#8a8a8a',
-          borderLeftColor: '#8a8a8a',
-          borderRadius: '50%',
-          animation: 'spinReverseIn 0.8s ease-out forwards, spinReverseContinuous 2s linear infinite 0.8s'
-        }} />
-        
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '48px', fontWeight: 'bold', color: '#025274',
+          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+          backgroundImage: 'url(/logo.png)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          clipPath: 'circle(18% at 50% 45%)',
           opacity: showRupee ? 1 : 0,
-          transform: showRupee ? 'scale(1)' : 'scale(0.5)',
+          transform: showRupee ? 'scale(1)' : 'scale(0)',
+          transformOrigin: '50% 45%',
           transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-        }}>
-          ₹
-        </div>
+        }} />
+        
+        {/* Text: Isolate the bottom */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+          backgroundImage: 'url(/logo.png)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          clipPath: 'polygon(0 78%, 100% 78%, 100% 100%, 0 100%)',
+          opacity: showName ? 1 : 0,
+          transform: showName ? 'translateY(0)' : 'translateY(-15px)',
+          transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+        }} />
       </div>
       
       <div style={{
-        fontSize: '28px', fontWeight: 'bold', color: 'var(--text-main)',
-        opacity: showName ? 1 : 0,
-        transform: showName ? 'translateY(0)' : 'translateY(-20px)',
-        transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-      }}>
-        Pocket Vyapaar
-      </div>
-      <div style={{
         fontSize: '14px', letterSpacing: '1.5px', textTransform: 'lowercase',
+        color: 'var(--text-main)',
         opacity: showName ? 0.7 : 0,
         transform: showName ? 'translateY(0)' : 'translateY(-10px)',
         transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s',
-        marginTop: '8px'
+        marginTop: '-10px'
       }}>
         Syncing Every Daily Deal
       </div>
