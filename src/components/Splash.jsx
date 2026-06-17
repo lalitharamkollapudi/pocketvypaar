@@ -32,27 +32,27 @@ export default function Splash({ onComplete }) {
         <svg viewBox="0 0 100 100" style={{position: 'absolute', width: '100%', height: '100%', overflow: 'visible'}}>
           <defs>
             <mask id="blueMask">
-              <circle cx="45" cy="55" r="45" fill="white" />
-              <circle cx="55" cy="45" r="41" fill="black" />
+              <circle cx="47" cy="53" r="47" fill="white" />
+              <circle cx="53" cy="47" r="47" fill="black" />
             </mask>
             <mask id="greyMask">
-              <circle cx="55" cy="45" r="45" fill="white" />
-              <circle cx="45" cy="55" r="41" fill="black" />
+              <circle cx="53" cy="47" r="47" fill="white" />
+              <circle cx="47" cy="53" r="47" fill="black" />
             </mask>
           </defs>
 
           {/* Dark Blue Crescent (Spins Clockwise) */}
           <g style={{ transformOrigin: '50% 50%', animation: 'spinIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinContinuous 3s linear infinite 1s' }}>
-            <circle cx="45" cy="55" r="45" fill="#025274" mask="url(#blueMask)" />
+            <circle cx="47" cy="53" r="47" fill="#025274" mask="url(#blueMask)" />
             {/* Small circle at the thickest part of the blue crescent */}
-            <circle cx="12" cy="80" r="4" fill="var(--bg-color)" stroke="#025274" strokeWidth="2.5" />
+            <circle cx="14" cy="86" r="3.5" fill="var(--bg-color)" stroke="#025274" strokeWidth="2.5" />
           </g>
 
           {/* Grey Crescent (Spins Counter-Clockwise) */}
           <g style={{ transformOrigin: '50% 50%', animation: 'spinReverseIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinReverseContinuous 3s linear infinite 1s' }}>
-            <circle cx="55" cy="45" r="45" fill="#8a8a8a" mask="url(#greyMask)" />
+            <circle cx="53" cy="47" r="47" fill="#8a8a8a" mask="url(#greyMask)" />
             {/* Small circle at the thickest part of the grey crescent */}
-            <circle cx="88" cy="20" r="4" fill="var(--bg-color)" stroke="#8a8a8a" strokeWidth="2.5" />
+            <circle cx="86" cy="14" r="3.5" fill="var(--bg-color)" stroke="#8a8a8a" strokeWidth="2.5" />
           </g>
         </svg>
         
