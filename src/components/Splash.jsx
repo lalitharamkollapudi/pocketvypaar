@@ -26,39 +26,35 @@ export default function Splash({ onComplete }) {
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       zIndex: 9999, overflow: 'hidden'
     }}>
-      <div style={{ position: 'relative', width: '160px', height: '160px' }}>
+      <div style={{ position: 'relative', width: '180px', height: '180px' }}>
         
-        {/* Dark Blue Ring */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          border: '12px solid transparent',
-          borderTopColor: '#025274',
-          borderLeftColor: '#025274',
-          borderRadius: '50%',
-          animation: 'spinIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinContinuous 3s linear infinite 1s'
-        }}>
-          {/* Small circle at tip */}
-          <div style={{
-            position: 'absolute', bottom: '15px', left: '15px', width: '14px', height: '14px',
-            borderRadius: '50%', border: '3px solid #025274', background: 'var(--bg-color)'
-          }} />
-        </div>
-        
-        {/* Grey Ring */}
-        <div style={{
-          position: 'absolute', top: '15px', left: '15px', right: '15px', bottom: '15px',
-          border: '12px solid transparent',
-          borderBottomColor: '#8a8a8a',
-          borderRightColor: '#8a8a8a',
-          borderRadius: '50%',
-          animation: 'spinReverseIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinReverseContinuous 3s linear infinite 1s'
-        }}>
-          {/* Small circle at tip */}
-          <div style={{
-            position: 'absolute', top: '10px', right: '10px', width: '14px', height: '14px',
-            borderRadius: '50%', border: '3px solid #8a8a8a', background: 'var(--bg-color)'
-          }} />
-        </div>
+        {/* SVG Rings with Razor Sharp Edges */}
+        <svg viewBox="0 0 100 100" style={{position: 'absolute', width: '100%', height: '100%', overflow: 'visible'}}>
+          <defs>
+            <mask id="blueMask">
+              <circle cx="45" cy="55" r="45" fill="white" />
+              <circle cx="55" cy="45" r="41" fill="black" />
+            </mask>
+            <mask id="greyMask">
+              <circle cx="55" cy="45" r="45" fill="white" />
+              <circle cx="45" cy="55" r="41" fill="black" />
+            </mask>
+          </defs>
+
+          {/* Dark Blue Crescent (Spins Clockwise) */}
+          <g style={{ transformOrigin: '50% 50%', animation: 'spinIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinContinuous 3s linear infinite 1s' }}>
+            <circle cx="45" cy="55" r="45" fill="#025274" mask="url(#blueMask)" />
+            {/* Small circle at the thickest part of the blue crescent */}
+            <circle cx="12" cy="80" r="4" fill="var(--bg-color)" stroke="#025274" strokeWidth="2.5" />
+          </g>
+
+          {/* Grey Crescent (Spins Counter-Clockwise) */}
+          <g style={{ transformOrigin: '50% 50%', animation: 'spinReverseIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinReverseContinuous 3s linear infinite 1s' }}>
+            <circle cx="55" cy="45" r="45" fill="#8a8a8a" mask="url(#greyMask)" />
+            {/* Small circle at the thickest part of the grey crescent */}
+            <circle cx="88" cy="20" r="4" fill="var(--bg-color)" stroke="#8a8a8a" strokeWidth="2.5" />
+          </g>
+        </svg>
         
         {/* Rupee Symbol */}
         <div style={{
