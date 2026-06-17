@@ -6,6 +6,7 @@ import { api } from '../../mockApi';
 export default function CustomerDashboard({ user }) {
   const [shops, setShops] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [billingRequests, setBillingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ export default function CustomerDashboard({ user }) {
       setShops(data);
       const pendingReqs = await api.getPendingRequests(user.id);
       setRequests(pendingReqs);
+      const pendingBilling = await api.getPendingBillingSessions(user.id);
+      setBillingRequests(pendingBilling);
     } catch (e) {
       console.error(e);
     } finally {
@@ -36,6 +39,15 @@ export default function CustomerDashboard({ user }) {
     }
   };
 
+  const handleAcceptBillingSession = async (sessionId) => {
+    try {
+      await api.acceptBillingSession(sessionId);
+      loadShops(); // Refresh requests
+    } catch(e) {
+      console.error(e);
+    }
+  };
+
   return (
     <div style={{display: 'flex', flexDirection: 'column', height: '100vh', maxWidth: '800px', margin: '0 auto', background: 'var(--bg-color)'}}>
       {/* Header */}
@@ -46,7 +58,7 @@ export default function CustomerDashboard({ user }) {
         </div>
         <button onClick={() => setShowNotifications(true)} className="icon-btn" style={{background: 'transparent', border: 'none', position: 'relative'}}>
           <Bell size={24} color="var(--text-main)" />
-          {requests.length > 0 && (
+          {(requests.length > 0 || billingRequests.length > 0) && (
             <span style={{position: 'absolute', top: 0, right: 0, width: '10px', height: '10px', background: 'var(--danger-color)', borderRadius: '50%'}}></span>
           )}
         </button>
@@ -61,10 +73,11 @@ export default function CustomerDashboard({ user }) {
               <button onClick={() => setShowNotifications(false)} className="icon-btn"><X size={20}/></button>
             </div>
             
-            {requests.length === 0 ? (
+            {(requests.length === 0 && billingRequests.length === 0) ? (
               <div style={{textAlign: 'center', color: 'var(--text-muted)', padding: '20px 0'}}>No new notifications.</div>
             ) : (
               <div className="space-y-4">
+                {/* Connection Requests */}
                 {requests.map(req => (
                   <div key={req.id} style={{padding: '12px', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                     <div>
@@ -73,6 +86,21 @@ export default function CustomerDashboard({ user }) {
                     </div>
                     <button onClick={() => handleAcceptRequest(req.id)} className="primary" style={{padding: '6px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px'}}>
                       <Check size={14} /> Accept
+                    </button>
+                  </div>
+                ))}
+                
+                {/* Billing Session Requests */}
+                {billingRequests.map(req => (
+                  <div key={req.id} style={{padding: '12px', border: '1px solid var(--primary-color)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: '12px', background: 'rgba(59,130,246,0.05)'}}>
+                    <div>
+                      <div style={{fontWeight: 600, fontSize: '14px', color: 'var(--primary-color)'}}>Bill Generating...</div>
+                      <div style={{fontSize: '13px', color: 'var(--text-main)', marginTop: '4px'}}>
+                        The bill is generating by <strong>{req.ownerName}</strong> - {req.ownerMobile}
+                      </div>
+                    </div>
+                    <button onClick={() => handleAcceptBillingSession(req.id)} className="primary" style={{width: '100%', padding: '8px', fontSize: '14px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px'}}>
+                      <Check size={16} /> Accept
                     </button>
                   </div>
                 ))}

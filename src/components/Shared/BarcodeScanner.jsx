@@ -1,41 +1,33 @@
-// src/components/Shared/BarcodeScanner.jsx
-import React, { useState } from 'react';
-import BarcodeReader from 'react-barcode-reader';
+import React, { useEffect, useState } from 'react';
+import { Html5QrcodeScanner } from 'html5-qrcode';
 
-/**
- * Simple wrapper around react-barcode-reader.
- * Props:
- *   onScan: (code:string) => void   // called with the scanned barcode
- *   onError?: (err:Error) => void   // optional error handler
- */
-export default function BarcodeScanner({ onScan, onError }) {
-  const [scanning, setScanning] = useState(true);
+export default function BarcodeScanner({ onScanSuccess, onScanError }) {
+  const [scannerId] = useState(`qr-reader-${Math.random().toString(36).substring(2, 9)}`);
 
-  const handleScan = (code) => {
-    setScanning(false);
-    if (onScan) onScan(code);
-  };
+  useEffect(() => {
+    const scanner = new Html5QrcodeScanner(scannerId, {
+      qrbox: { width: 250, height: 150 },
+      fps: 10,
+    });
 
-  const handleError = (err) => {
-    console.error('Barcode scan error', err);
-    if (onError) onError(err);
-  };
+    const successCallback = (decodedText, decodedResult) => {
+      // Avoid rapid continuous scanning
+      scanner.pause(true);
+      onScanSuccess(decodedText, () => scanner.resume());
+    };
+
+    scanner.render(successCallback, onScanError);
+
+    return () => {
+      scanner.clear().catch(error => {
+        console.error("Failed to clear html5QrcodeScanner. ", error);
+      });
+    };
+  }, [scannerId, onScanSuccess, onScanError]);
 
   return (
-    <div style={{ position: 'relative', width: '100%', paddingTop: '75%', background: '#000' }}>
-      {scanning && (
-        <BarcodeReader
-          onError={handleError}
-          onScan={handleScan}
-          width={'100%'}
-          height={'100%'}
-        />
-      )}
-      {!scanning && (
-        <button className="btn btn-primary" onClick={() => setScanning(true)} style={{ marginTop: '1rem' }}>
-          Scan Again
-        </button>
-      )}
+    <div className="barcode-scanner-container" style={{width: '100%', maxWidth: '500px', margin: '0 auto'}}>
+      <div id={scannerId} style={{ width: '100%' }}></div>
     </div>
   );
 }

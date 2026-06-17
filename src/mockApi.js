@@ -16,12 +16,21 @@ const saveData = () => {
   localStorage.setItem('pocketvyapaar_shops', JSON.stringify(shops));
   localStorage.setItem('pocketvyapaar_transactions', JSON.stringify(transactions));
   localStorage.setItem('pocketvyapaar_linkRequests', JSON.stringify(linkRequests));
+  localStorage.setItem('pocketvyapaar_billingSessions', JSON.stringify(billingSessions));
 };
 
 let users = loadData('users', []);
 let shops = loadData('shops', []);
 let transactions = loadData('transactions', []);
 let linkRequests = loadData('linkRequests', []);
+let billingSessions = loadData('billingSessions', []);
+let mockProducts = [
+  { barcode: '123456789', name: 'Parle-G Biscuits', price: 10, category: 'Snacks' },
+  { barcode: '987654321', name: 'Amul Butter 100g', price: 54, category: 'Dairy' },
+  { barcode: '111111111', name: 'Tata Salt 1kg', price: 25, category: 'Groceries' },
+  { barcode: '222222222', name: 'Maggi Noodles', price: 14, category: 'Snacks' },
+  { barcode: '333333333', name: 'Aashirvaad Atta 5kg', price: 250, category: 'Groceries' }
+];
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
@@ -294,6 +303,101 @@ export const api = {
         const ledger = transactions.filter(t => t.shopId === shopId && t.customerId === customerId);
         resolve(ledger);
       }, 500);
+    });
+  },
+
+  // Secure Barcode Billing Workflow
+  requestBillingSession: async (shopOwnerId, customerId) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // Check if an active/pending session already exists
+        const existing = billingSessions.find(s => s.shopOwnerId === shopOwnerId && s.customerId === customerId && (s.status === 'pending' || s.status === 'accepted'));
+        if (existing) {
+          if (existing.status === 'pending') return reject(new Error('A pending bill request already exists. Waiting for customer approval.'));
+          if (existing.status === 'accepted') return reject(new Error('A billing session is already active.'));
+        }
+
+        const newSession = {
+          id: 'session_' + generateId(),
+          shopOwnerId,
+          customerId,
+          status: 'pending',
+          timestamp: new Date().toISOString()
+        };
+        billingSessions.push(newSession);
+        saveData();
+        resolve(newSession);
+      }, 300);
+    });
+  },
+
+  getPendingBillingSessions: async (customerId) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const pending = billingSessions.filter(s => s.customerId === customerId && s.status === 'pending');
+        const enriched = pending.map(session => {
+          const owner = users.find(u => u.id === session.shopOwnerId);
+          const shop = shops.find(s => s.ownerId === session.shopOwnerId);
+          return {
+            ...session,
+            shopName: shop?.name || 'A Shop',
+            ownerName: owner?.name || 'Shop Owner',
+            ownerMobile: owner?.mobile || 'Unknown'
+          };
+        });
+        resolve(enriched);
+      }, 300);
+    });
+  },
+
+  acceptBillingSession: async (sessionId) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const session = billingSessions.find(s => s.id === sessionId);
+        if (!session) return reject(new Error('Session not found'));
+        session.status = 'accepted';
+        saveData();
+        resolve({ success: true });
+      }, 300);
+    });
+  },
+
+  getBillingSessionStatus: async (shopOwnerId, customerId) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const session = billingSessions.find(s => s.shopOwnerId === shopOwnerId && s.customerId === customerId && (s.status === 'pending' || s.status === 'accepted'));
+        resolve(session ? session.status : null);
+      }, 300);
+    });
+  },
+
+  addScannedProductToLedger: async (shopOwnerId, customerId, barcode) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // Verify active session
+        const session = billingSessions.find(s => s.shopOwnerId === shopOwnerId && s.customerId === customerId && s.status === 'accepted');
+        if (!session) return reject(new Error('No active approved billing session with this customer.'));
+
+        // Lookup product
+        const product = mockProducts.find(p => p.barcode === barcode);
+        if (!product) return reject(new Error(`Unrecognized barcode: ${barcode}`));
+
+        // Add transaction
+        const newTransaction = {
+          id: 'txn_' + generateId(),
+          date: new Date().toISOString().split('T')[0],
+          time: new Date().toLocaleTimeString(),
+          shopId: shops.find(s => s.ownerId === shopOwnerId)?.id,
+          customerId,
+          amount: product.price,
+          type: 'purchase',
+          description: `Scanned: ${product.name}`,
+          barcode: product.barcode
+        };
+        transactions.push(newTransaction);
+        saveData();
+        resolve(newTransaction);
+      }, 300);
     });
   }
 };

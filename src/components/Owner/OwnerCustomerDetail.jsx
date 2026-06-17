@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, ScanLine, Camera, X, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Plus, ScanLine, Camera, X, Image as ImageIcon, CheckCircle, Clock } from 'lucide-react';
 import { api } from '../../mockApi';
+import BarcodeScanner from '../Shared/BarcodeScanner';
 
 export default function OwnerCustomerDetail() {
   const { customerId } = useParams();
@@ -12,12 +13,39 @@ export default function OwnerCustomerDetail() {
   const [transactionType, setTransactionType] = useState(null); // 'barcode' or 'camera'
 
   const [amount, setAmount] = useState('');
-  const [productDetails, setProductDetails] = useState('');
-  const barcodeInputRef = useRef(null);
+  const [sessionStatus, setSessionStatus] = useState(null); // null, 'pending', 'accepted'
+  const [scanMessage, setScanMessage] = useState('');
 
   useEffect(() => {
     loadLedger();
+    checkSessionStatus();
   }, [customerId]);
+
+  useEffect(() => {
+    let interval;
+    if (sessionStatus === 'pending') {
+      interval = setInterval(checkSessionStatus, 3000);
+    }
+    return () => clearInterval(interval);
+  }, [sessionStatus]);
+
+  const checkSessionStatus = async () => {
+    try {
+      const status = await api.getBillingSessionStatus('mockShopId', customerId);
+      setSessionStatus(status);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleRequestBilling = async () => {
+    try {
+      await api.requestBillingSession('mockShopId', customerId);
+      setSessionStatus('pending');
+    } catch (e) {
+      alert(e.message);
+    }
+  };
 
   useEffect(() => {
     if (transactionType === 'barcode' && barcodeInputRef.current) {
@@ -37,18 +65,23 @@ export default function OwnerCustomerDetail() {
     }
   };
 
-  const handleBarcodeSubmit = async (e) => {
-    e.preventDefault();
-    if (!productDetails) return;
-    
-    // Auto-fill mock amount for demo purposes when scanning
-    const mockAmount = Math.floor(Math.random() * 500) + 50; 
-    
-    await saveTransaction({
-      entry_type: 'Barcode',
-      product_details: productDetails,
-      amount: mockAmount,
-    });
+  const handleScanSuccess = async (barcode, resumeScan) => {
+    setScanMessage('Processing...');
+    try {
+      await api.addScannedProductToLedger('mockShopId', customerId, barcode);
+      setScanMessage(`Success! Added product.`);
+      loadLedger();
+      setTimeout(() => {
+        setScanMessage('');
+        resumeScan();
+      }, 2000);
+    } catch (e) {
+      setScanMessage(`Error: ${e.message}`);
+      setTimeout(() => {
+        setScanMessage('');
+        resumeScan();
+      }, 3000);
+    }
   };
 
   const handleCameraSubmit = async (e) => {
@@ -72,7 +105,6 @@ export default function OwnerCustomerDetail() {
       });
       setIsModalOpen(false);
       setTransactionType(null);
-      setProductDetails('');
       setAmount('');
       loadLedger();
     } catch (e) {
@@ -131,13 +163,27 @@ export default function OwnerCustomerDetail() {
       </div>
 
       {/* Speed Dial / FAB */}
-      <button 
-        className="primary flex-center"
-        style={{position: 'fixed', bottom: '24px', right: '24px', width: '56px', height: '56px', borderRadius: '50%', boxShadow: '0 8px 16px rgba(59,130,246,0.4)', zIndex: 50}}
-        onClick={() => setIsModalOpen(true)}
-      >
-        <Plus size={24} />
-      </button>
+      {sessionStatus === 'accepted' ? (
+        <button 
+          className="primary flex-center"
+          style={{position: 'fixed', bottom: '24px', right: '24px', width: '56px', height: '56px', borderRadius: '50%', boxShadow: '0 8px 16px rgba(59,130,246,0.4)', zIndex: 50}}
+          onClick={() => setIsModalOpen(true)}
+        >
+          <Plus size={24} />
+        </button>
+      ) : (
+        <div style={{position: 'fixed', bottom: 0, left: 0, right: 0, padding: '16px', background: 'var(--surface-color)', borderTop: '1px solid var(--border-color)', zIndex: 40}}>
+          {sessionStatus === 'pending' ? (
+            <button className="primary" style={{width: '100%', opacity: 0.7}} disabled>
+              <Clock size={16} style={{marginRight: '8px'}} /> Waiting for Customer Approval...
+            </button>
+          ) : (
+            <button className="primary" style={{width: '100%'}} onClick={handleRequestBilling}>
+              Request Bill Generation
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Transaction Modal */}
       {isModalOpen && (
@@ -168,20 +214,18 @@ export default function OwnerCustomerDetail() {
                 </div>
               </div>
             ) : transactionType === 'barcode' ? (
-              <form onSubmit={handleBarcodeSubmit} className="space-y-4 fade-in" style={{marginTop: '24px'}}>
-                <p style={{fontSize: '14px', color: 'var(--text-muted)'}}>Connect hardware scanner and scan product barcode.</p>
-                <input 
-                  ref={barcodeInputRef}
-                  type="text" 
-                  autoFocus
-                  placeholder="Waiting for scan..." 
-                  value={productDetails}
-                  onChange={e => setProductDetails(e.target.value)}
-                  style={{fontFamily: 'monospace'}}
-                />
-                <button type="submit" className="primary" style={{width: '100%'}}>Save Scanned Item</button>
-                <button type="button" onClick={() => setTransactionType(null)} style={{width: '100%', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-main)'}}>Back</button>
-              </form>
+              <div className="fade-in" style={{marginTop: '24px'}}>
+                <p style={{fontSize: '14px', color: 'var(--text-muted)', marginBottom: '16px'}}>Scan a product barcode to add it to the ledger.</p>
+                <BarcodeScanner onScanSuccess={handleScanSuccess} onScanError={() => {}} />
+                
+                {scanMessage && (
+                  <div style={{marginTop: '16px', padding: '12px', background: scanMessage.includes('Error') ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)', color: scanMessage.includes('Error') ? 'var(--danger-color)' : 'var(--success-color)', borderRadius: 'var(--radius-md)', textAlign: 'center', fontWeight: 500}}>
+                    {scanMessage}
+                  </div>
+                )}
+                
+                <button type="button" onClick={() => setTransactionType(null)} style={{width: '100%', marginTop: '24px', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-main)'}}>Back</button>
+              </div>
             ) : (
               <form onSubmit={handleCameraSubmit} className="space-y-4 fade-in" style={{marginTop: '24px'}}>
                  <div className="surface flex-center" style={{padding: '40px', borderStyle: 'dashed', borderColor: 'var(--border-color)', cursor: 'pointer', flexDirection: 'column'}}>
