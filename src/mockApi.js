@@ -130,7 +130,12 @@ export const api = {
   login: async (identifier, password) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const user = users.find(u => (u.mobile === identifier || u.email === identifier) && u.password === password);
+        const id = identifier.trim().toLowerCase();
+        const pwd = password.trim();
+        const user = users.find(u => 
+          ((u.mobile && u.mobile.trim() === id) || (u.email && u.email.trim().toLowerCase() === id)) && 
+          u.password === pwd
+        );
         if (user) resolve(user);
         else reject(new Error('Invalid credentials'));
       }, 500);

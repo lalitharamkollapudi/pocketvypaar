@@ -39,7 +39,7 @@ export default function ForgotPassword() {
     setLoading(true);
     setError('');
     try {
-      const res = await api.verifyOtp(otp);
+      const res = await api.verifyOtp(identifier, otp);
       if (res.success) {
         setStep(3);
       }
@@ -66,7 +66,7 @@ export default function ForgotPassword() {
     try {
       await api.resetPassword(identifier, password);
       // Automatically login after reset
-      const user = await api.login(identifier, password);
+      const user = await api.login(identifier.trim(), password.trim());
       if(user.role === 'shop_owner') navigate('/owner/dashboard');
       else navigate('/customer/dashboard');
     } catch (err) {

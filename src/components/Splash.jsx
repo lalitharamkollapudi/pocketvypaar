@@ -1,31 +1,74 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Splash({ onComplete }) {
+  const [showRupee, setShowRupee] = useState(false);
+  const [showName, setShowName] = useState(false);
+
   useEffect(() => {
-    const timer = setTimeout(() => onComplete(), 2500);
-    return () => clearTimeout(timer);
+    const t1 = setTimeout(() => setShowRupee(true), 800);
+    const t2 = setTimeout(() => setShowName(true), 1600);
+    const timer = setTimeout(() => onComplete(), 3500);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(timer);
+    };
   }, [onComplete]);
 
   return (
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      background: 'linear-gradient(135deg, var(--primary-color), var(--primary-hover))',
+      background: 'var(--bg-color)',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      color: 'white', zIndex: 9999
+      color: 'var(--text-main)', zIndex: 9999
     }}>
-      <div className="fire-animation" style={{ marginBottom: '20px' }}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flame-icon">
-          <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
-        </svg>
+      <div style={{ position: 'relative', width: '120px', height: '120px', marginBottom: '32px' }}>
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+          border: '8px solid transparent',
+          borderTopColor: 'var(--primary-color)',
+          borderRightColor: 'var(--primary-color)',
+          borderRadius: '50%',
+          animation: 'spinIn 0.8s ease-out forwards, spinContinuous 2s linear infinite 0.8s'
+        }} />
+        
+        <div style={{
+          position: 'absolute', top: '16px', left: '16px', right: '16px', bottom: '16px',
+          border: '8px solid transparent',
+          borderBottomColor: '#f59e0b',
+          borderLeftColor: '#f59e0b',
+          borderRadius: '50%',
+          animation: 'spinReverseIn 0.8s ease-out forwards, spinReverseContinuous 2s linear infinite 0.8s'
+        }} />
+        
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '48px', fontWeight: 'bold', color: 'var(--primary-hover)',
+          opacity: showRupee ? 1 : 0,
+          transform: showRupee ? 'scale(1)' : 'scale(0.5)',
+          transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+        }}>
+          ₹
+        </div>
       </div>
-      <div className="splash-logo" style={{marginBottom: '8px', display: 'flex', justifyContent: 'center'}}>
-        <img src="/logo.png" alt="Pocket Vyapaar Logo" style={{width: '200px', height: 'auto', objectFit: 'contain', borderRadius: '50%', boxShadow: '0 4px 20px rgba(0,0,0,0.3)'}} />
+      
+      <div style={{
+        fontSize: '28px', fontWeight: 'bold', color: 'var(--text-main)',
+        opacity: showName ? 1 : 0,
+        transform: showName ? 'translateY(0)' : 'translateY(-20px)',
+        transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+      }}>
+        Pocket Vyapaar
       </div>
-      <div className="splash-caption" style={{fontSize: '14px', letterSpacing: '1.5px', textTransform: 'lowercase', opacity: 0}}>
+      <div style={{
+        fontSize: '14px', letterSpacing: '1.5px', textTransform: 'lowercase',
+        opacity: showName ? 0.7 : 0,
+        transform: showName ? 'translateY(0)' : 'translateY(-10px)',
+        transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s',
+        marginTop: '8px'
+      }}>
         Syncing Every Daily Deal
-      </div>
-      <div className="splash-footer" style={{position: 'absolute', bottom: '40px', fontSize: '12px', opacity: 0}}>
-        presented by innovative bros
       </div>
     </div>
   );

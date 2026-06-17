@@ -227,3 +227,23 @@ button:disabled {
   max-width: 400px;
   animation: fadeIn 0.3s ease-out;
 }
+
+@keyframes spinIn {
+  from { transform: rotate(-180deg) scale(0); opacity: 0; }
+  to { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+
+@keyframes spinReverseIn {
+  from { transform: rotate(180deg) scale(0); opacity: 0; }
+  to { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+
+@keyframes spinContinuous {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinReverseContinuous {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}

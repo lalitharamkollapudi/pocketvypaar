@@ -16,7 +16,7 @@ export default function Login({ setUser }) {
     setLoading(true);
     setError('');
     try {
-      const user = await api.login(mobile, password);
+      const user = await api.login(mobile.trim(), password.trim());
       setUser(user);
       if(user.role === 'shop_owner') navigate('/owner/dashboard');
       else navigate('/customer/dashboard');
