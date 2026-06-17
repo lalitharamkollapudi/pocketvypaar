@@ -26,8 +26,8 @@ export default function Splash({ onComplete }) {
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
           border: '8px solid transparent',
-          borderTopColor: 'var(--primary-color)',
-          borderRightColor: 'var(--primary-color)',
+          borderTopColor: '#025274',
+          borderRightColor: '#025274',
           borderRadius: '50%',
           animation: 'spinIn 0.8s ease-out forwards, spinContinuous 2s linear infinite 0.8s'
         }} />
@@ -35,8 +35,8 @@ export default function Splash({ onComplete }) {
         <div style={{
           position: 'absolute', top: '16px', left: '16px', right: '16px', bottom: '16px',
           border: '8px solid transparent',
-          borderBottomColor: '#f59e0b',
-          borderLeftColor: '#f59e0b',
+          borderBottomColor: '#8a8a8a',
+          borderLeftColor: '#8a8a8a',
           borderRadius: '50%',
           animation: 'spinReverseIn 0.8s ease-out forwards, spinReverseContinuous 2s linear infinite 0.8s'
         }} />
@@ -44,7 +44,7 @@ export default function Splash({ onComplete }) {
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '48px', fontWeight: 'bold', color: 'var(--primary-hover)',
+          fontSize: '48px', fontWeight: 'bold', color: '#025274',
           opacity: showRupee ? 1 : 0,
           transform: showRupee ? 'scale(1)' : 'scale(0.5)',
           transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
