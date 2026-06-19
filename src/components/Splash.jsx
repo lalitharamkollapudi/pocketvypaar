@@ -28,41 +28,54 @@ export default function Splash({ onComplete }) {
     }}>
       <div style={{ position: 'relative', width: '250px', height: '250px' }}>
         
-        {/* Blue Ring (Exact Logo Pixels) - Spins Clockwise */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-          backgroundImage: 'url(/logo_blue.png)',
-          backgroundSize: 'contain',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          transformOrigin: '50% 45%', // Center of the ring rotation
-          animation: 'spinIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinContinuous 3s linear infinite 1s'
-        }} />
+        <svg viewBox="0 0 200 200" width="100%" height="100%" style={{position: 'absolute', top: 0, left: 0}}>
+          <defs>
+            <linearGradient id="blueGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#026388" />
+              <stop offset="100%" stopColor="#013f5a" />
+            </linearGradient>
+            <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#b0b5b9" />
+              <stop offset="100%" stopColor="#8c9296" />
+            </linearGradient>
+          </defs>
 
-        {/* Grey Ring (Exact Logo Pixels) - Spins Anti-Clockwise */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-          backgroundImage: 'url(/logo_grey.png)',
-          backgroundSize: 'contain',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          transformOrigin: '50% 45%', // Center of the ring rotation
-          animation: 'spinReverseIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinReverseContinuous 3s linear infinite 1s'
-        }} />
-        
+          {/* Blue Ring - Spins Clockwise */}
+          <g style={{
+            transformOrigin: '100px 100px',
+            animation: 'spinIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinContinuous 3s linear infinite 1s'
+          }}>
+            <g transform="rotate(25 100 100)">
+              <path d="M 100,15 A 85,85 0 0,0 100,185 A 98,98 0 0,1 100,15 Z" fill="url(#blueGrad)" />
+              <circle cx="100" cy="15" r="7" fill="var(--bg-color)" stroke="url(#blueGrad)" strokeWidth="3" />
+            </g>
+          </g>
+
+          {/* Silver Ring - Spins Anti-Clockwise */}
+          <g style={{
+            transformOrigin: '100px 100px',
+            animation: 'spinReverseIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinReverseContinuous 3s linear infinite 1s'
+          }}>
+            <g transform="rotate(205 100 100)">
+              <path d="M 100,15 A 85,85 0 0,0 100,185 A 98,98 0 0,1 100,15 Z" fill="url(#silverGrad)" />
+              <circle cx="100" cy="15" r="7" fill="var(--bg-color)" stroke="url(#silverGrad)" strokeWidth="3" />
+            </g>
+          </g>
+        </svg>
+
         {/* Exact Logo Rupee Symbol */}
         <div style={{
           position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-          backgroundImage: 'url(/logo_transparent.png)',
-          backgroundSize: 'contain',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          clipPath: 'circle(18% at 50% 45%)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
           opacity: showRupee ? 1 : 0,
           transform: showRupee ? 'scale(1)' : 'scale(0.3)',
-          transformOrigin: '50% 45%',
           transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.5)'
-        }} />
+        }}>
+          <span style={{
+            fontSize: '85px', fontWeight: '800', color: '#026388', 
+            fontFamily: 'system-ui, -apple-system, sans-serif'
+          }}>₹</span>
+        </div>
       </div>
       
       {/* Title sliding from borders */}
