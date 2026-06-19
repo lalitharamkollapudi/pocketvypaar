@@ -11,7 +11,16 @@ import CustomerDashboard from './components/Customer/CustomerDashboard';
 import Splash from './components/Splash';
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUserState] = useState(() => {
+    const saved = localStorage.getItem('pocketvyapaar_currentUser');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const setUser = (newUser) => {
+    if (newUser) localStorage.setItem('pocketvyapaar_currentUser', JSON.stringify(newUser));
+    else localStorage.removeItem('pocketvyapaar_currentUser');
+    setUserState(newUser);
+  };
   const [showSplash, setShowSplash] = useState(true);
 
   const ProtectedRoute = ({ children, role }) => {

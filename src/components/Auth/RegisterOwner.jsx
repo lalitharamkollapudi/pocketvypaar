@@ -4,13 +4,28 @@ import { Eye, EyeOff } from 'lucide-react';
 import { api } from '../../mockApi';
 
 export default function RegisterOwner() {
-  const [formData, setFormData] = useState({ name: '', email: '', mobile: '', gst: null, password: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', mobile: '', gst: null, password: '', confirmPassword: '', location: null });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [terms, setTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [locationLoading, setLocationLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const handleGetLocation = () => {
+    setLocationLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        setFormData(prev => ({...prev, location: { lat: pos.coords.latitude, lng: pos.coords.longitude }}));
+        setLocationLoading(false);
+      },
+      err => {
+        alert("Failed to get location: " + err.message);
+        setLocationLoading(false);
+      }
+    );
+  };
 
   const isValid = formData.name && formData.email && formData.mobile.length === 10 && formData.gst && formData.password && formData.password === formData.confirmPassword && terms;
 
@@ -44,6 +59,17 @@ export default function RegisterOwner() {
           <div style={{textAlign: 'left'}}>
             <label style={{fontSize: '12px', color: 'var(--text-muted)'}}>Upload GST Certificate</label>
             <input type="file" onChange={e => setFormData({...formData, gst: e.target.files[0]})} required accept=".pdf,image/*" />
+          </div>
+          
+          <div style={{textAlign: 'left'}}>
+            <label style={{fontSize: '12px', color: 'var(--text-muted)'}}>Shop Location</label>
+            {formData.location ? (
+              <div style={{color: 'var(--success-color)', fontSize: '14px', marginTop: '4px'}}>Location captured successfully!</div>
+            ) : (
+              <button type="button" onClick={handleGetLocation} disabled={locationLoading} style={{width: '100%', marginTop: '4px', background: 'transparent', border: '1px solid var(--primary-color)', color: 'var(--primary-color)'}}>
+                {locationLoading ? 'Getting Location...' : 'Get Current Location (Required)'}
+              </button>
+            )}
           </div>
           
           <div style={{position: 'relative'}}>

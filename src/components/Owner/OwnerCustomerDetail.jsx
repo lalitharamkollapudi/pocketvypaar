@@ -227,8 +227,17 @@ export default function OwnerCustomerDetail({ user }) {
               </div>
             ) : (
               <form onSubmit={handleCameraSubmit} className="space-y-4 fade-in" style={{marginTop: '24px'}}>
-                 <div className="surface flex-center" style={{padding: '40px', borderStyle: 'dashed', borderColor: 'var(--border-color)', cursor: 'pointer', flexDirection: 'column'}}>
-                    <ImageIcon size={32} color="var(--text-muted)" style={{marginBottom: '8px'}}/>
+                 <div 
+                   className="surface flex-center" 
+                   style={{padding: '40px', borderStyle: 'dashed', borderColor: 'var(--border-color)', cursor: 'pointer', flexDirection: 'column', position: 'relative'}}
+                 >
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      capture="environment" 
+                      style={{position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%'}} 
+                    />
+                    <Camera size={32} color="var(--text-muted)" style={{marginBottom: '8px'}}/>
                     <span style={{fontSize: '12px', color: 'var(--text-muted)'}}>Tap to open Camera</span>
                  </div>
                  <input 
