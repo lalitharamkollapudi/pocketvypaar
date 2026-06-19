@@ -38,16 +38,6 @@ export default function Splash({ onComplete }) {
               <stop offset="0%" stopColor="#b0b5b9" />
               <stop offset="100%" stopColor="#8c9296" />
             </linearGradient>
-
-            <mask id="blueMask">
-              <rect x="0" y="0" width="200" height="200" fill="white" />
-              <circle cx="120" cy="100" r="85" fill="black" />
-            </mask>
-            
-            <mask id="silverMask">
-              <rect x="0" y="0" width="200" height="200" fill="white" />
-              <circle cx="80" cy="100" r="85" fill="black" />
-            </mask>
           </defs>
 
           {/* Blue Ring (Left) - Spins Clockwise */}
@@ -55,10 +45,11 @@ export default function Splash({ onComplete }) {
             transformOrigin: '100px 100px',
             animation: 'spinIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinContinuous 3s linear infinite 1s'
           }}>
-            <g transform="rotate(30 100 100)">
-              <circle cx="100" cy="100" r="75" fill="url(#blueGrad)" mask="url(#blueMask)" />
-              {/* Bottom tip circle (8 o'clock in logo) */}
-              <circle cx="70" cy="168.7" r="7" fill="var(--bg-color)" stroke="url(#blueGrad)" strokeWidth="3.5" />
+            <g transform="rotate(-45 100 100)">
+              {/* 150-degree crescent over the top */}
+              <path d="M 17.9,78 A 85,85 0 0,1 182.1,78 A 105,105 0 0,0 17.9,78 Z" fill="url(#blueGrad)" />
+              {/* Node at the left tip */}
+              <circle cx="17.9" cy="78" r="7.5" fill="var(--bg-color)" stroke="url(#blueGrad)" strokeWidth="3.5" />
             </g>
           </g>
 
@@ -67,10 +58,11 @@ export default function Splash({ onComplete }) {
             transformOrigin: '100px 100px',
             animation: 'spinReverseIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinReverseContinuous 3s linear infinite 1s'
           }}>
-            <g transform="rotate(30 100 100)">
-              <circle cx="100" cy="100" r="75" fill="url(#silverGrad)" mask="url(#silverMask)" />
-              {/* Top tip circle (2 o'clock in logo) */}
-              <circle cx="130" cy="31.3" r="7" fill="var(--bg-color)" stroke="url(#silverGrad)" strokeWidth="3.5" />
+            <g transform="rotate(135 100 100)">
+              {/* 150-degree crescent over the top */}
+              <path d="M 17.9,78 A 85,85 0 0,1 182.1,78 A 105,105 0 0,0 17.9,78 Z" fill="url(#silverGrad)" />
+              {/* Node at the left tip */}
+              <circle cx="17.9" cy="78" r="7.5" fill="var(--bg-color)" stroke="url(#silverGrad)" strokeWidth="3.5" />
             </g>
           </g>
         </svg>
