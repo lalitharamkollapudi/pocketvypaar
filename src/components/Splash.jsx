@@ -38,27 +38,39 @@ export default function Splash({ onComplete }) {
               <stop offset="0%" stopColor="#b0b5b9" />
               <stop offset="100%" stopColor="#8c9296" />
             </linearGradient>
+
+            <mask id="blueMask">
+              <rect x="0" y="0" width="200" height="200" fill="white" />
+              <circle cx="120" cy="100" r="85" fill="black" />
+            </mask>
+            
+            <mask id="silverMask">
+              <rect x="0" y="0" width="200" height="200" fill="white" />
+              <circle cx="80" cy="100" r="85" fill="black" />
+            </mask>
           </defs>
 
-          {/* Blue Ring - Spins Clockwise */}
+          {/* Blue Ring (Left) - Spins Clockwise */}
           <g style={{
             transformOrigin: '100px 100px',
             animation: 'spinIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinContinuous 3s linear infinite 1s'
           }}>
-            <g transform="rotate(25 100 100)">
-              <path d="M 100,15 A 85,85 0 0,0 100,185 A 98,98 0 0,1 100,15 Z" fill="url(#blueGrad)" />
-              <circle cx="100" cy="15" r="7" fill="var(--bg-color)" stroke="url(#blueGrad)" strokeWidth="3" />
+            <g transform="rotate(30 100 100)">
+              <circle cx="100" cy="100" r="75" fill="url(#blueGrad)" mask="url(#blueMask)" />
+              {/* Bottom tip circle (8 o'clock in logo) */}
+              <circle cx="70" cy="168.7" r="7" fill="var(--bg-color)" stroke="url(#blueGrad)" strokeWidth="3.5" />
             </g>
           </g>
 
-          {/* Silver Ring - Spins Anti-Clockwise */}
+          {/* Silver Ring (Right) - Spins Anti-Clockwise */}
           <g style={{
             transformOrigin: '100px 100px',
             animation: 'spinReverseIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, spinReverseContinuous 3s linear infinite 1s'
           }}>
-            <g transform="rotate(205 100 100)">
-              <path d="M 100,15 A 85,85 0 0,0 100,185 A 98,98 0 0,1 100,15 Z" fill="url(#silverGrad)" />
-              <circle cx="100" cy="15" r="7" fill="var(--bg-color)" stroke="url(#silverGrad)" strokeWidth="3" />
+            <g transform="rotate(30 100 100)">
+              <circle cx="100" cy="100" r="75" fill="url(#silverGrad)" mask="url(#silverMask)" />
+              {/* Top tip circle (2 o'clock in logo) */}
+              <circle cx="130" cy="31.3" r="7" fill="var(--bg-color)" stroke="url(#silverGrad)" strokeWidth="3.5" />
             </g>
           </g>
         </svg>
@@ -66,16 +78,16 @@ export default function Splash({ onComplete }) {
         {/* Exact Logo Rupee Symbol */}
         <div style={{
           position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          backgroundImage: 'url(/logo_transparent.png)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          clipPath: 'circle(18% at 50% 45%)',
           opacity: showRupee ? 1 : 0,
           transform: showRupee ? 'scale(1)' : 'scale(0.3)',
+          transformOrigin: '50% 45%',
           transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.5)'
-        }}>
-          <span style={{
-            fontSize: '85px', fontWeight: '800', color: '#026388', 
-            fontFamily: 'system-ui, -apple-system, sans-serif'
-          }}>₹</span>
-        </div>
+        }} />
       </div>
       
       {/* Title sliding from borders */}
