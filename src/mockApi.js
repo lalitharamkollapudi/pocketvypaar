@@ -427,8 +427,8 @@ export const api = {
           shopId: shops.find(s => s.ownerId === shopOwnerId)?.id,
           customerId,
           amount: product.price,
-          type: 'purchase',
-          description: `Scanned: ${product.name}`,
+          entry_type: 'Barcode',
+          product_details: product.name,
           barcode: product.barcode
         };
         transactions.push(newTransaction);
