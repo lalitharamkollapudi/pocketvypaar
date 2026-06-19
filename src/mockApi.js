@@ -306,6 +306,13 @@ export const api = {
     return new Promise((resolve) => {
       setTimeout(() => {
         refreshData();
+        
+        // If they passed shopOwnerId instead of shopId, fix it
+        if (data.shopOwnerId && !data.shopId) {
+            const shop = shops.find(s => s.ownerId === data.shopOwnerId);
+            if (shop) data.shopId = shop.id;
+        }
+
         const newTransaction = {
           id: 'txn_' + generateId(),
           date: new Date().toISOString().split('T')[0],
@@ -319,10 +326,12 @@ export const api = {
     });
   },
 
-  getLedger: async (shopId, customerId) => {
+  getLedger: async (shopOwnerId, customerId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
         refreshData();
+        const shop = shops.find(s => s.ownerId === shopOwnerId);
+        const shopId = shop ? shop.id : shopOwnerId; // fallback if it was already shopId
         const ledger = transactions.filter(t => t.shopId === shopId && t.customerId === customerId);
         resolve(ledger);
       }, 500);

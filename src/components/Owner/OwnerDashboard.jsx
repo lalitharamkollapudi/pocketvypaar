@@ -123,7 +123,7 @@ export default function OwnerDashboard({ user }) {
             </div>
           } />
           
-          <Route path="/customer/:customerId" element={<OwnerCustomerDetail />} />
+          <Route path="/customer/:customerId" element={<OwnerCustomerDetail user={user} />} />
           <Route path="/notifications" element={<div className="fade-in" style={{padding: '24px', textAlign: 'center'}}>No new notifications.</div>} />
         </Routes>
       </div>

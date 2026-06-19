@@ -4,7 +4,7 @@ import { ArrowLeft, Plus, ScanLine, Camera, X, Image as ImageIcon, CheckCircle, 
 import { api } from '../../mockApi';
 import BarcodeScanner from '../Shared/BarcodeScanner';
 
-export default function OwnerCustomerDetail() {
+export default function OwnerCustomerDetail({ user }) {
   const { customerId } = useParams();
   const navigate = useNavigate();
   const [ledger, setLedger] = useState([]);
@@ -31,7 +31,7 @@ export default function OwnerCustomerDetail() {
 
   const checkSessionStatus = async () => {
     try {
-      const status = await api.getBillingSessionStatus('mockShopId', customerId);
+      const status = await api.getBillingSessionStatus(user.id, customerId);
       setSessionStatus(status);
     } catch (e) {
       console.error(e);
@@ -40,7 +40,7 @@ export default function OwnerCustomerDetail() {
 
   const handleRequestBilling = async () => {
     try {
-      await api.requestBillingSession('mockShopId', customerId);
+      await api.requestBillingSession(user.id, customerId);
       setSessionStatus('pending');
     } catch (e) {
       alert(e.message);
@@ -55,8 +55,7 @@ export default function OwnerCustomerDetail() {
 
   const loadLedger = async () => {
     try {
-      // Assuming a generic shopId for the demo. In a real app we'd get it from context.
-      const data = await api.getLedger('mockShopId', customerId);
+      const data = await api.getLedger(user.id, customerId);
       setLedger(data);
     } catch (e) {
       console.error(e);
@@ -68,7 +67,7 @@ export default function OwnerCustomerDetail() {
   const handleScanSuccess = async (barcode, resumeScan) => {
     setScanMessage('Processing...');
     try {
-      await api.addScannedProductToLedger('mockShopId', customerId, barcode);
+      await api.addScannedProductToLedger(user.id, customerId, barcode);
       setScanMessage(`Success! Added product.`);
       loadLedger();
       setTimeout(() => {
@@ -99,7 +98,7 @@ export default function OwnerCustomerDetail() {
   const saveTransaction = async (data) => {
     try {
       await api.addTransaction({
-         shopId: 'mockShopId',
+         shopOwnerId: user.id,
          customerId,
          ...data
       });
