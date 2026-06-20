@@ -152,12 +152,18 @@ export const api = {
         refreshData();
         const id = String(identifier).trim().toLowerCase();
         const pwd = String(password).trim();
+        
+        const accountExists = users.find(u => (u.mobile && String(u.mobile).trim() === id) || (u.email && String(u.email).trim().toLowerCase() === id));
+        if (!accountExists) {
+          return reject(new Error('Person does not have an account'));
+        }
+        
         const user = users.find(u => 
           ((u.mobile && String(u.mobile).trim() === id) || (u.email && String(u.email).trim().toLowerCase() === id)) && 
           String(u.password).trim() === pwd
         );
         if (user) resolve(user);
-        else reject(new Error('Invalid credentials'));
+        else reject(new Error('Invalid password'));
       }, 500);
     });
   },

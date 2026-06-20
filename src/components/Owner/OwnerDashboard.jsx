@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, Link } from 'react-router-dom';
-import { Bell, ChevronRight, Plus, Camera, ScanLine, X, UserPlus } from 'lucide-react';
+import { Bell, ChevronRight, Plus, Camera, ScanLine, X, UserPlus, Settings, Moon, Sun, LogOut } from 'lucide-react';
 import { api } from '../../mockApi';
 import OwnerCustomerDetail from './OwnerCustomerDetail';
 
@@ -13,6 +13,22 @@ export default function OwnerDashboard({ user }) {
   const [addCustomerLoading, setAddCustomerLoading] = useState(false);
   const [addCustomerError, setAddCustomerError] = useState('');
   const [addCustomerSuccess, setAddCustomerSuccess] = useState('');
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [showSettings, setShowSettings] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('pocketvyapaar_currentUser');
+    window.location.href = '/';
+  };
 
   useEffect(() => {
     loadCustomers();
@@ -58,13 +74,29 @@ export default function OwnerDashboard({ user }) {
           <h1 style={{margin: 0, fontSize: '20px'}}>Kirana App</h1>
           <div style={{fontSize: '12px', color: 'var(--text-muted)'}}>{user.name}'s Dashboard</div>
         </div>
-        <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
+        <div style={{display: 'flex', gap: '8px', alignItems: 'center', position: 'relative'}}>
           <button onClick={() => setShowAddCustomer(true)} className="icon-btn" style={{background: 'transparent', border: 'none', color: 'var(--primary-color)'}}>
             <UserPlus size={24} />
           </button>
-          <Link to="/owner/dashboard/notifications" style={{color: 'var(--text-main)', padding: '8px'}}>
+          <Link to="/owner/dashboard/notifications" style={{color: 'var(--text-main)', padding: '8px', display: 'flex'}}>
             <Bell size={24} />
           </Link>
+          <button onClick={toggleTheme} className="icon-btn" style={{background: 'transparent', border: 'none', color: 'var(--text-main)', padding: '8px', display: 'flex'}}>
+            {theme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
+          </button>
+          <button onClick={() => setShowSettings(!showSettings)} className="icon-btn" style={{background: 'transparent', border: 'none', color: 'var(--text-main)', padding: '8px', display: 'flex'}}>
+            <Settings size={24} />
+          </button>
+
+          {showSettings && (
+            <div className="surface fade-in" style={{position: 'absolute', top: '50px', right: '0', width: '200px', padding: '16px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 20}}>
+              <h4 style={{margin: '0 0 16px 0'}}>Settings</h4>
+              <button onClick={handleLogout} style={{width: '100%', display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: 'none', color: 'var(--danger-color)', padding: '8px 0', cursor: 'pointer', fontSize: '16px'}}>
+                <LogOut size={20} />
+                Sign Out / Log Out
+              </button>
+            </div>
+          )}
         </div>
       </header>
 

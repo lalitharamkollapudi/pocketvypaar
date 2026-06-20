@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, Link } from 'react-router-dom';
-import { ChevronRight, ArrowLeft, MapPin, Store, Bell, Check, X } from 'lucide-react';
+import { ChevronRight, ArrowLeft, MapPin, Store, Bell, Check, X, Moon, Sun, Settings, LogOut } from 'lucide-react';
 import { api } from '../../mockApi';
 
 export default function CustomerDashboard({ user }) {
@@ -9,7 +9,23 @@ export default function CustomerDashboard({ user }) {
   const [billingRequests, setBillingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [showSettings, setShowSettings] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('pocketvyapaar_currentUser');
+    window.location.href = '/';
+  };
 
   useEffect(() => {
     loadShops();
@@ -56,12 +72,32 @@ export default function CustomerDashboard({ user }) {
           <h1 style={{margin: 0, fontSize: '20px'}}>Kirana Khata</h1>
           <div style={{fontSize: '12px', color: 'var(--text-muted)'}}>{user.name}'s Accounts</div>
         </div>
-        <button onClick={() => setShowNotifications(true)} className="icon-btn" style={{background: 'transparent', border: 'none', position: 'relative'}}>
-          <Bell size={24} color="var(--text-main)" />
-          {(requests.length > 0 || billingRequests.length > 0) && (
-            <span style={{position: 'absolute', top: 0, right: 0, width: '10px', height: '10px', background: 'var(--danger-color)', borderRadius: '50%'}}></span>
+        <div style={{display: 'flex', gap: '8px', alignItems: 'center', position: 'relative'}}>
+          <button onClick={() => setShowNotifications(true)} className="icon-btn" style={{background: 'transparent', border: 'none', position: 'relative', color: 'var(--text-main)', padding: '8px', display: 'flex'}}>
+            <Bell size={24} />
+            {(requests.length > 0 || billingRequests.length > 0) && (
+              <span style={{position: 'absolute', top: 4, right: 4, width: '10px', height: '10px', background: 'var(--danger-color)', borderRadius: '50%'}}></span>
+            )}
+          </button>
+          
+          <button onClick={toggleTheme} className="icon-btn" style={{background: 'transparent', border: 'none', color: 'var(--text-main)', padding: '8px', display: 'flex'}}>
+            {theme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
+          </button>
+          
+          <button onClick={() => setShowSettings(!showSettings)} className="icon-btn" style={{background: 'transparent', border: 'none', color: 'var(--text-main)', padding: '8px', display: 'flex'}}>
+            <Settings size={24} />
+          </button>
+
+          {showSettings && (
+            <div className="surface fade-in" style={{position: 'absolute', top: '50px', right: '0', width: '200px', padding: '16px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 20}}>
+              <h4 style={{margin: '0 0 16px 0'}}>Settings</h4>
+              <button onClick={handleLogout} style={{width: '100%', display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: 'none', color: 'var(--danger-color)', padding: '8px 0', cursor: 'pointer', fontSize: '16px'}}>
+                <LogOut size={20} />
+                Sign Out / Log Out
+              </button>
+            </div>
           )}
-        </button>
+        </div>
       </header>
 
       {/* Notifications Modal */}

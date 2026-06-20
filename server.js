@@ -30,35 +30,47 @@ app.post('/api/send-otp', async (req, res) => {
       <html>
       <head>
       <style>
-        body { font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; margin: 0; padding: 40px 0; }
-        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #3b82f6, #1d4ed8); padding: 30px 20px; text-align: center; color: white; }
-        .header h1 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 1px; }
-        .content { padding: 40px 30px; color: #374151; line-height: 1.6; font-size: 16px; }
-        .otp-box { background-color: #eff6ff; border: 2px dashed #3b82f6; border-radius: 12px; padding: 24px; text-align: center; margin: 32px 0; }
-        .otp-code { font-size: 42px; font-weight: 800; color: #1d4ed8; letter-spacing: 8px; margin: 0; font-family: monospace; }
-        .footer { background-color: #f9fafb; padding: 24px; text-align: center; font-size: 13px; color: #6b7280; border-top: 1px solid #f3f4f6; }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 40px 0; -webkit-font-smoothing: antialiased; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #0ea5e9, #0284c7); padding: 40px 20px; text-align: center; color: #ffffff; }
+        .header h1 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header p { margin: 10px 0 0; font-size: 16px; opacity: 0.9; font-weight: 300; }
+        .content { padding: 40px 40px; color: #334155; line-height: 1.8; font-size: 16px; }
+        .greeting { font-size: 20px; font-weight: 600; color: #0f172a; margin-top: 0; }
+        .highlight { color: #0ea5e9; font-weight: 600; }
+        .otp-container { margin: 35px 0; padding: 30px; background: #f8fafc; border-radius: 16px; text-align: center; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .otp-label { font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; color: #64748b; margin-bottom: 15px; display: block; font-weight: 600; }
+        .otp-code { font-size: 48px; font-weight: 800; color: #0f172a; letter-spacing: 12px; margin: 0; font-family: 'Courier New', Courier, monospace; text-shadow: 2px 2px 0px #e2e8f0; }
+        .warning { font-size: 14px; color: #64748b; background: #fffbeb; padding: 15px; border-left: 4px solid #f59e0b; border-radius: 4px; margin-top: 30px; }
+        .footer { background-color: #f8fafc; padding: 30px; text-align: center; font-size: 13px; color: #94a3b8; border-top: 1px solid #e2e8f0; }
+        .footer a { color: #0ea5e9; text-decoration: none; }
       </style>
       </head>
       <body>
         <div class="container">
           <div class="header">
             <h1>Pocket Vyapaar</h1>
+            <p>Your Smart Digital Khata</p>
           </div>
           <div class="content">
-            <h2 style="margin-top:0; color:#111827;">Verification Code</h2>
-            <p>Hello,</p>
-            <p>Please use the following OTP to verify your account linked with mobile number <strong>${mobile}</strong>.</p>
+            <h2 class="greeting">Welcome Aboard!</h2>
+            <p>Thank you for registering with <strong>Pocket Vyapaar</strong>. We are thrilled to have you join our platform designed to make your daily transactions and record-keeping absolutely seamless.</p>
+            <p>To securely complete your registration for the mobile number <span class="highlight">${mobile}</span>, please use the verification code below:</p>
             
-            <div class="otp-box">
+            <div class="otp-container">
+              <span class="otp-label">Secure Verification Code</span>
               <p class="otp-code">${otp}</p>
             </div>
             
-            <p>This code is valid for 10 minutes. If you did not request this code, please ignore this email.</p>
+            <p>Enter this code in the app to instantly activate your account and start managing your ledger effortlessly.</p>
+            
+            <div class="warning">
+              <strong>Security Notice:</strong> This code is valid for the next 10 minutes. Please do not share this OTP with anyone. If you didn't request this, simply ignore this email.
+            </div>
           </div>
           <div class="footer">
-            &copy; ${new Date().getFullYear()} Pocket Vyapaar. All rights reserved.<br>
-            This is an automated message, please do not reply.
+            <p>&copy; ${new Date().getFullYear()} Pocket Vyapaar Inc. All rights reserved.</p>
+            <p>Need help? Contact our <a href="#">Support Team</a></p>
           </div>
         </div>
       </body>
