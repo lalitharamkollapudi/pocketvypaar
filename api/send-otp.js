@@ -78,15 +78,15 @@ export default async function handler(req, res) {
     const htmlContent = generateEmailTemplate('OTP Verification', 'Welcome Aboard!', otpContent);
 
     const mailOptions = {
-      from: \`"Pocket Vyapaar" <\${process.env.EMAIL_USER}>\`,
+      from: `"Pocket Vyapaar" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: \`OTP Verification for \${mobile}\`,
-      text: \`Hello,\\n\\nThe OTP for user with mobile number \${mobile} is: \${otp}\\n\\nPlease use this OTP to verify your account in the Kirana Khata app.\`,
+      subject: `OTP Verification for ${mobile}`,
+      text: `Hello,\n\nThe OTP for user with mobile number ${mobile} is: ${otp}\n\nPlease use this OTP to verify your account in the Kirana Khata app.`,
       html: htmlContent
     };
     
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ success: true, message: \`OTP sent to \${email} successfully\` });
+    res.status(200).json({ success: true, message: `OTP sent to ${email} successfully` });
   } catch (error) {
     console.error('Error sending email:', error);
     res.status(500).json({ success: false, error: 'Failed to send OTP email', details: error.message });
